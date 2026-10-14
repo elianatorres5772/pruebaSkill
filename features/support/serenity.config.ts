@@ -37,13 +37,6 @@ BeforeAll({ timeout: 60_000 }, async () => {
         crew: [
             ['@serenity-js/console-reporter', { theme: 'auto' }],
             ['@serenity-js/web:Photographer', { strategy: 'TakePhotosOfFailures' }],
-            [
-                '@serenity-js/html-reporter',
-                {
-                    outputDirectory: path.resolve(process.cwd(), 'reports/serenity-js'),
-                    specDirectory: path.resolve(process.cwd(), 'features'),
-                },
-            ],
             // Serenity BDD: JSON results that 'pnpm report:bdd' turns into the Serenity BDD HTML report.
             ['@serenity-js/serenity-bdd', { specDirectory: path.resolve(process.cwd(), 'features') }],
             ['@serenity-js/core:ArtifactArchiver', { outputDirectory: path.resolve(process.cwd(), 'target/site/serenity') }],

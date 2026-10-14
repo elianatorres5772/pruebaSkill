@@ -165,13 +165,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      '@serenity-js/rest':
-        specifier: 3.48.0
-        version: 3.48.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
-      axios:
-        specifier: ^1.20.0
-        version: 1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
     devDependencies:
       '@cucumber/cucumber':
         specifier: 13.2.1
@@ -191,9 +184,6 @@ importers:
       '@serenity-js/cucumber':
         specifier: 3.48.0
         version: 3.48.0(@cucumber/cucumber@13.2.1)
-      '@serenity-js/html-reporter':
-        specifier: 3.48.0
-        version: 3.48.0(@serenity-js/core@3.48.0)(@serenity-js/web@3.48.0)
       '@serenity-js/playwright':
         specifier: 3.48.0
         version: 3.48.0(playwright-core@1.63.0)
@@ -506,17 +496,6 @@ packages:
       '@cucumber/cucumber':
         optional: true
       cucumber:
-        optional: true
-
-  '@serenity-js/html-reporter@3.48.0':
-    resolution: {integrity: sha512-xB9uOC2+Mj4tf8P4+/5osKxC8MlubWh8OamuS6ahHvQMjWcNSOCdK0Fcvcyp8+j2Rn06nGEOfvLbXU3lwgIcxg==}
-    engines: {node: ^22.22.2 || ^24.15.0}
-    hasBin: true
-    peerDependencies:
-      '@serenity-js/core': ^3.0.0
-      '@serenity-js/web': ^3.0.0
-    peerDependenciesMeta:
-      '@serenity-js/web':
         optional: true
 
   '@serenity-js/playwright@3.48.0':
@@ -871,11 +850,6 @@ packages:
     resolution: {integrity: sha512-vtEhXh/gNjI9Yg1u4jX/0YVPMvxzHuGgCm6tC5kZyb08yjGWGnqAjGJvcXbqQR2P3MyMEFnRbpcdFS6PBcLqew==}
     engines: {node: '>=12'}
 
-  marked@18.0.12:
-    resolution: {integrity: sha512-LEm4ga2YeI2T3GVHj9b0BaDPPk93LLTHMFeMyQbNIzPxc8vCI0y/scy0ZA6z6lXKyT9j9Nhl/OC6ZYKYGuFScA==}
-    engines: {node: '>= 20'}
-    hasBin: true
-
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -1144,9 +1118,6 @@ packages:
   yup@1.7.1:
     resolution: {integrity: sha512-GKHFX2nXul2/4Dtfxhozv701jLQHdf6J34YDh2cEkpqoo8le5Mg6/LrdseVLrFarmFygZTlfIhHx/QKfb/QWXw==}
 
-  zod@4.6.2:
-    resolution: {integrity: sha512-lh5RCAGFa1Cm2hjtNwLQhSs/AsqdWnTQaBER9fEwN/88pSh7KOtJavtBx/0VlkN/uFd61SwYmljLMDAsHlvzBQ==}
-
 snapshots:
 
   '@babel/code-frame@7.29.7':
@@ -1406,17 +1377,6 @@ snapshots:
       tiny-types: 2.0.5
     optionalDependencies:
       '@cucumber/cucumber': 13.2.1
-
-  '@serenity-js/html-reporter@3.48.0(@serenity-js/core@3.48.0)(@serenity-js/web@3.48.0)':
-    dependencies:
-      '@serenity-js/core': 3.48.0
-      fast-glob: 3.3.3
-      marked: 18.0.12
-      tiny-types: 2.0.5
-      yargs: 18.1.0
-      zod: 4.6.2
-    optionalDependencies:
-      '@serenity-js/web': 3.48.0
 
   '@serenity-js/playwright@3.48.0(playwright-core@1.63.0)':
     dependencies:
@@ -1791,8 +1751,6 @@ snapshots:
 
   luxon@3.7.2: {}
 
-  marked@18.0.12: {}
-
   math-intrinsics@1.1.0: {}
 
   merge2@1.4.1: {}
@@ -2022,5 +1980,3 @@ snapshots:
       tiny-case: 1.0.3
       toposort: 2.0.2
       type-fest: 2.19.0
-
-  zod@4.6.2: {}

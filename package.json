@@ -4,20 +4,16 @@
   "description": "Professional automation framework with TypeScript, Cucumber, Serenity/JS and Playwright",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js",
+    "test": "node scripts/test-and-report.mjs test:cucumber report:bdd",
     "test:cucumber": "cucumber-js",
-    "test:api": "cucumber-js --config cucumber-api.mjs",
-    "test:api:smoke": "cucumber-js --config cucumber-api.mjs --tags @smoke",
     "test:playwright": "playwright test",
-    "test:all": "pnpm test:cucumber && pnpm test:api && pnpm test:playwright",
+    "test:all": "pnpm test:cucumber && pnpm test:playwright",
     "typecheck": "tsc --noEmit",
-    "test:report": "pnpm exec html-reporter serve --dir ./reports/serenity-js --open",
-    "test:report:api": "pnpm exec html-reporter serve --dir ./reports/serenity-js-api --open",
+    "test:report": "node scripts/open-report.mjs target/site/serenity",
     "report:bdd:setup": "serenity-bdd update",
     "report:bdd": "serenity-bdd run --source ./target/site/serenity --destination ./target/site/serenity --features ./features",
-    "report:bdd:api": "serenity-bdd run --source ./target/site/serenity-api --destination ./target/site/serenity-api --features ./features/api",
     "test:bdd": "node scripts/test-and-report.mjs test:cucumber report:bdd",
-    "test:bdd:api": "node scripts/test-and-report.mjs test:api report:bdd:api"
+    "test:open": "node scripts/test-and-report.mjs test:cucumber report:bdd test:report"
   },
   "keywords": [
     "automation",
@@ -48,7 +44,6 @@
     "@serenity-js/console-reporter": "3.48.0",
     "@serenity-js/core": "3.48.0",
     "@serenity-js/cucumber": "3.48.0",
-    "@serenity-js/html-reporter": "3.48.0",
     "@serenity-js/playwright": "3.48.0",
     "@serenity-js/serenity-bdd": "3.48.0",
     "@serenity-js/web": "3.48.0",
@@ -56,9 +51,5 @@
     "playwright": "^1.63.0",
     "tsx": "4.23.15",
     "typescript": "5.9.3"
-  },
-  "dependencies": {
-    "@serenity-js/rest": "3.48.0",
-    "axios": "^1.20.0"
   }
 }

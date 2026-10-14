@@ -12,11 +12,12 @@ Framework de pruebas de aceptación basado en **TypeScript**, **pnpm**, **Cucumb
 
 ```bash
 pnpm install
-pnpm test              # Escenarios Cucumber + Serenity/JS
+pnpm test              # Escenarios Cucumber + reporte Serenity BDD
 pnpm test:playwright   # Regresión Playwright existente
 pnpm test:all          # Ejecuta ambos runners
 pnpm typecheck         # Comprobación TypeScript
-pnpm test:report       # Abre el informe HTML de Serenity/JS
+pnpm test:open         # Escenarios + reporte Serenity BDD y lo abre en el navegador
+pnpm test:report       # Abre el último reporte Serenity BDD
 ```
 
 El runner Cucumber usa el canal `chrome`, por lo que no requiere descargar Chromium. El modo headless es el predeterminado; para abrir el Chrome local se puede ejecutar en PowerShell con:
@@ -30,18 +31,18 @@ La URL por defecto es `https://playwright.dev/`. Puede cambiarse con `BASE_URL` 
 
 ## Reportes Serenity BDD
 
-Además del reporte HTML de Serenity/JS (`reports/`), las suites generan el reporte clásico de **Serenity BDD**.
+El reporte del proyecto es el de **Serenity BDD**.
 Requiere **Java 17 o superior** en el `PATH` (por ejemplo `winget install --id Microsoft.OpenJDK.17 -e --source winget`).
 
 ```bash
-pnpm test:bdd          # Pruebas UI (Arajet) + reporte en target/site/serenity/index.html
-pnpm test:bdd:api      # Pruebas API + reporte en target/site/serenity-api/index.html
-pnpm report:bdd        # Solo regenera el reporte UI a partir de la última ejecución
-pnpm report:bdd:api    # Solo regenera el reporte API
+pnpm test              # Pruebas UI (Arajet) + reporte en target/site/serenity/index.html
+pnpm test:open         # Igual que pnpm test y además abre el reporte
+pnpm test:report       # Abre el último reporte
+pnpm report:bdd        # Solo regenera el reporte a partir de la última ejecución
 pnpm report:bdd:setup  # Descarga/actualiza el CLI de Serenity BDD (se hace solo en pnpm install)
 ```
 
-`test:bdd` y `test:bdd:api` generan el reporte aunque haya pruebas fallidas y terminan con el código de salida de las pruebas.
+`test` y `test:open` generan el reporte aunque haya pruebas fallidas y terminan con el código de salida de las pruebas.
 
 ## Estructura Screenplay
 
@@ -66,7 +67,6 @@ Las step definitions solo conectan Gherkin con Screenplay. Los selectores están
 
 ## Configuración existente
 
-- `opencode.json` se mantiene sin cambios para conservar el servidor Playwright MCP con `--browser=chrome`.
 - `playwright.config.ts` conserva el proyecto `chrome`, el canal local y sus opciones de reportería, workers y trazas.
 
 ## Pruebas Arajet

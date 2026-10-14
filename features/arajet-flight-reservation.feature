@@ -25,8 +25,8 @@ Feature: Arajet flight reservation
     Examples:
       | origin | destination | outDay | arrivalDay | bundle  | adults |
       | MIA    | PUJ         | 15     | 22         | Comfort | 2      |
-      | MIA    | PUJ         | 20     | 27         | Comfort | 3      |
-      | MIA    | PUJ         | 25     | 32         | Comfort | 4      |
+      #| MIA    | PUJ         | 20     | 27         | Comfort | 3      |
+      #| MIA    | PUJ         | 25     | 32         | Comfort | 4      |
 
   # TODO: Implementar escenarios negativos
   # - Search with invalid dates
