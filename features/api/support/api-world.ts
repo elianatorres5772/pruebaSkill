@@ -37,6 +37,9 @@ configure({
                 specDirectory: path.resolve(process.cwd(), 'features/api'),
             },
         ],
+        // Serenity BDD: JSON results that 'pnpm report:bdd:api' turns into the Serenity BDD HTML report.
+        ['@serenity-js/serenity-bdd', { specDirectory: path.resolve(process.cwd(), 'features/api') }],
+        ['@serenity-js/core:ArtifactArchiver', { outputDirectory: path.resolve(process.cwd(), 'target/site/serenity-api') }],
     ],
     cueTimeout: Duration.ofSeconds(10),
 });

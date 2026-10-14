@@ -4,15 +4,13 @@ import { Ensure, equals, includes, not } from '@serenity-js/assertions';
 import type { Actor } from '@serenity-js/core';
 
 import { OutboundFlightResults, PassengerInformationStep } from '../../src/screenplay/questions/ArajetFlightResults.js';
-import { SeatMap, SeatSummary } from '../../src/screenplay/questions/ArajetSeatMap.js';
+import { BookedAdults, PassengerSubmitButtonState } from '../../src/screenplay/questions/ArajetPassengers.js';
 import { buildArajetBookingData } from '../../src/screenplay/test-data/ArajetBookingData.js';
 import type { ArajetBookingParameters } from '../../src/screenplay/test-data/ArajetBookingData.js';
-import { syntheticPassenger } from '../../src/screenplay/test-data/ArajetPassengerData.js';
-import { ContinueToSeatSelection } from '../../src/screenplay/tasks/ContinueToSeatSelection.js';
+import { syntheticPassengers } from '../../src/screenplay/test-data/ArajetPassengerData.js';
 import { EnterPassengerInformation } from '../../src/screenplay/tasks/EnterPassengerInformation.js';
 import { OpenArajet } from '../../src/screenplay/tasks/OpenArajet.js';
 import { SearchForFlight } from '../../src/screenplay/tasks/SearchForFlight.js';
-import { SelectSeats } from '../../src/screenplay/tasks/SelectSeats.js';
 import { SelectOutboundFlight, SelectReturnFlight } from '../../src/screenplay/tasks/SelectFlight.js';
 
 const bookingParametersFrom = (table: DataTable): ArajetBookingParameters => {
@@ -28,6 +26,7 @@ const bookingParametersFrom = (table: DataTable): ArajetBookingParameters => {
         outDay: values.outDay,
         arrivalDay: values.arrivalDay,
         bundle: values.bundle,
+        adults: values.adults,
     };
 };
 
@@ -61,28 +60,13 @@ Then('{pronoun} should reach the passenger information step', async (actor: Acto
     );
 });
 
-When('{pronoun} enters the passenger details', async (actor: Actor) => {
-    await actor.attemptsTo(EnterPassengerInformation.with(syntheticPassenger()));
+When('{pronoun} enters the details for {int} passengers', async (actor: Actor, adults: number) => {
+    await actor.attemptsTo(EnterPassengerInformation.forAll(syntheticPassengers(adults)));
 });
 
-When('{pronoun} continues to seat selection', async (actor: Actor) => {
-    await actor.attemptsTo(ContinueToSeatSelection.fromPassengerStep());
-});
-
-Then('{pronoun} should see the seat map', async (actor: Actor) => {
+Then('{pronoun} should have all {int} passengers ready to continue', async (actor: Actor, adults: number) => {
     await actor.attemptsTo(
-        Ensure.that(SeatMap(), includes('Selección de asiento')),
-    );
-});
-
-When('{pronoun} selects an available seat for each flight', async (actor: Actor) => {
-    await actor.attemptsTo(SelectSeats.forEachFlight());
-});
-
-Then('{pronoun} should see seats assigned for both flights', async (actor: Actor) => {
-    await actor.attemptsTo(
-        Ensure.that(SeatSummary(), includes('MIA')),
-        Ensure.that(SeatSummary(), includes('PUJ')),
-        Ensure.that(SeatSummary(), not(includes('--'))),
+        Ensure.that(BookedAdults(), equals(String(adults))),
+        Ensure.that(PassengerSubmitButtonState(), not(includes('button--disabled'))),
     );
 });

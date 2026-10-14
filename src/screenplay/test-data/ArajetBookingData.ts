@@ -6,6 +6,7 @@ export interface ArajetBookingData {
     departureDate: string;
     returnDate: string;
     bundle: ArajetBundle;
+    adults: number;
 }
 
 export interface ArajetBookingParameters {
@@ -14,7 +15,11 @@ export interface ArajetBookingParameters {
     outDay: string;
     arrivalDay: string;
     bundle: string;
+    adults?: string;
 }
+
+// Arajet limits online bookings to 20 adult passengers.
+const MAX_ADULTS = 20;
 
 const toArajetDate = (date: Date): string => {
     const year = date.getFullYear();
@@ -50,6 +55,12 @@ export const buildArajetBookingData = (
         throw new Error('Travel days must be whole numbers');
     }
 
+    const adults = Number(parameters.adults ?? '1');
+
+    if (!Number.isInteger(adults) || adults < 1 || adults > MAX_ADULTS) {
+        throw new Error(`Adults must be a whole number between 1 and ${ MAX_ADULTS }`);
+    }
+
     if (arrivalDay <= outDay) {
         throw new Error('The return day must be after the outbound day');
     }
@@ -60,5 +71,6 @@ export const buildArajetBookingData = (
         departureDate: toArajetDate(addDaysFromToday(outDay)),
         returnDate: toArajetDate(addDaysFromToday(arrivalDay)),
         bundle: parseBundle(parameters.bundle),
+        adults,
     };
 };

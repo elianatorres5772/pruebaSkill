@@ -44,6 +44,9 @@ BeforeAll({ timeout: 60_000 }, async () => {
                     specDirectory: path.resolve(process.cwd(), 'features'),
                 },
             ],
+            // Serenity BDD: JSON results that 'pnpm report:bdd' turns into the Serenity BDD HTML report.
+            ['@serenity-js/serenity-bdd', { specDirectory: path.resolve(process.cwd(), 'features') }],
+            ['@serenity-js/core:ArtifactArchiver', { outputDirectory: path.resolve(process.cwd(), 'target/site/serenity') }],
         ],
         cueTimeout: serenityCueTimeout,
     });

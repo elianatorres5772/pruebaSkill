@@ -28,6 +28,21 @@ pnpm test
 
 La URL por defecto es `https://playwright.dev/`. Puede cambiarse con `BASE_URL` sin modificar el código.
 
+## Reportes Serenity BDD
+
+Además del reporte HTML de Serenity/JS (`reports/`), las suites generan el reporte clásico de **Serenity BDD**.
+Requiere **Java 17 o superior** en el `PATH` (por ejemplo `winget install --id Microsoft.OpenJDK.17 -e --source winget`).
+
+```bash
+pnpm test:bdd          # Pruebas UI (Arajet) + reporte en target/site/serenity/index.html
+pnpm test:bdd:api      # Pruebas API + reporte en target/site/serenity-api/index.html
+pnpm report:bdd        # Solo regenera el reporte UI a partir de la última ejecución
+pnpm report:bdd:api    # Solo regenera el reporte API
+pnpm report:bdd:setup  # Descarga/actualiza el CLI de Serenity BDD (se hace solo en pnpm install)
+```
+
+`test:bdd` y `test:bdd:api` generan el reporte aunque haya pruebas fallidas y terminan con el código de salida de las pruebas.
+
 ## Estructura Screenplay
 
 ```text

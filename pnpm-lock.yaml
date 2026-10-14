@@ -197,6 +197,9 @@ importers:
       '@serenity-js/playwright':
         specifier: 3.48.0
         version: 3.48.0(playwright-core@1.63.0)
+      '@serenity-js/serenity-bdd':
+        specifier: 3.48.0
+        version: 3.48.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
       '@serenity-js/web':
         specifier: 3.48.0
         version: 3.48.0
@@ -526,6 +529,11 @@ packages:
     resolution: {integrity: sha512-Pnn91mqmsRALpk9sYAehq+NasbX0X1Q3E1LX1ZaNwUlZH81yuxLnRUyi7EaiVmFm6FtGnnZnUwsemryAeiwQAA==}
     engines: {node: ^22.22.2 || ^24.15.0}
 
+  '@serenity-js/serenity-bdd@3.48.0':
+    resolution: {integrity: sha512-NT/D4oZoxAS6Wong83NwCajWsj7HscC4Qywt+WoF/P2hnBgoODZSRQlFj88tt6aLIO41pu8XA6NQhMZKX3KdMg==}
+    engines: {node: ^22.22.2 || ^24.15.0}
+    hasBin: true
+
   '@serenity-js/web@3.48.0':
     resolution: {integrity: sha512-ZQ9MDuJm9Ui+sMRldJaaXvx8NCRc7varoYQ/kMAhcdvRYs1Wx7KFpW396jmI7/3+xkFMMKm11msg/VdyOduzQQ==}
     engines: {node: ^22.22.2 || ^24.15.0}
@@ -697,6 +705,9 @@ packages:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
 
+  find-java-home@2.0.0:
+    resolution: {integrity: sha512-m4Cf5WM5Y9UupofsLgcJuY5oFXVfVnfHx43pg3HJoVdtY2PN4Wfs7ex9svf7W7eLTP+6wmyBToaqGOCffHBHVA==}
+
   find-up-simple@1.0.1:
     resolution: {integrity: sha512-afd4O7zpqHeRyg4PfDQsXmlDe2PfdHtJt6Akt8jOWaApLOZk5JXs6VMR29lz03pRe9mpykrRCYIYxaJYcfpncQ==}
     engines: {node: '>=18'}
@@ -829,6 +840,10 @@ packages:
     resolution: {integrity: sha512-mE00Gnza5EEB3Ds0HfMyllZzbBrmLOX3vfWoj9A9PEnTfratQ/BcaJOuMhnkhjXvb2+FkY3VuHqtAGpTPmglFQ==}
     engines: {node: '>=18'}
 
+  isexe@4.0.0:
+    resolution: {integrity: sha512-FFUtZMpoZ8RqHS3XeXEmHWLA4thH+ZxCv2lOiPIn1Xc7CxrqhWzNSDzD+/chS/zbYezmiwWLdQC09JdQKmthOw==}
+    engines: {node: '>=20'}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -917,6 +932,10 @@ packages:
     resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
     engines: {node: '>=20'}
     hasBin: true
+
+  progress@2.0.3:
+    resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
+    engines: {node: '>=0.4.0'}
 
   property-expr@2.0.6:
     resolution: {integrity: sha512-SVtmxhRE/CGkn3eZY1T6pC8Nln6Fr/lu1mKSgRud0eC73whjGfoAogbn78LkD8aFL0zz3bAFerKSnOl7NlErBA==}
@@ -1084,6 +1103,18 @@ packages:
   validate-npm-package-name@8.0.0:
     resolution: {integrity: sha512-SCv6OOV6Xj2/3cXy3dGmADluJTNcL3o7hZAglNPTe+WYuEuvxgJzxPrSDLZhF+CwyQOubqgecjMmTJGMVLWjYQ==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
+  which@1.0.9:
+    resolution: {integrity: sha512-E87fdQ/eRJr9W1X4wTPejNy9zTW3FI2vpCZSJ/HAY+TkjKVC0TUm1jk6vn2Z7qay0DQy0+RBGdXxj+RmmiGZKQ==}
+    hasBin: true
+
+  which@7.0.0:
+    resolution: {integrity: sha512-RancgH2dmbLdHl6LRhEqvklWMgl/Hdnun0Y90KhBOLkMefg8Qa7/Zel8Sm+8HEcP6DEjzsWzpkuBQEZok58isA==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    hasBin: true
+
+  winreg@1.2.5:
+    resolution: {integrity: sha512-uf7tHf+tw0B1y+x+mKTLHkykBgK2KMs3g+KlzmyMbLvICSHQyB/xOFjTT8qZ3oeTFyU7Bbj4FzXitGG6jvKhYw==}
 
   wrap-ansi@9.0.2:
     resolution: {integrity: sha512-42AtmgqjV+X1VpdOfyTGOYRi0/zsoLqtXQckTmqTeybT+BDIbM/Guxo7x3pE2vtpr1ok6xRqM9OpBe+Jyoqyww==}
@@ -1407,6 +1438,23 @@ snapshots:
       - debug
       - supports-color
 
+  '@serenity-js/serenity-bdd@3.48.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)':
+    dependencies:
+      '@serenity-js/assertions': 3.48.0
+      '@serenity-js/core': 3.48.0
+      '@serenity-js/rest': 3.48.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
+      ansi-regex: 5.0.1
+      axios: 1.20.0(debug@4.4.3(supports-color@11.0.0))(supports-color@11.0.0)
+      chalk: 4.1.2
+      find-java-home: 2.0.0
+      progress: 2.0.3
+      tiny-types: 2.0.5
+      which: 7.0.0
+      yargs: 18.1.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
   '@serenity-js/web@3.48.0':
     dependencies:
       '@serenity-js/assertions': 3.48.0
@@ -1599,6 +1647,11 @@ snapshots:
     dependencies:
       to-regex-range: 5.0.1
 
+  find-java-home@2.0.0:
+    dependencies:
+      which: 1.0.9
+      winreg: 1.2.5
+
   find-up-simple@1.0.1: {}
 
   follow-redirects@1.16.0(debug@4.4.3(supports-color@11.0.0)):
@@ -1718,6 +1771,8 @@ snapshots:
 
   is-unicode-supported@2.1.0: {}
 
+  isexe@4.0.0: {}
+
   js-tokens@4.0.0: {}
 
   knuth-shuffle-seeded@1.0.6:
@@ -1782,6 +1837,8 @@ snapshots:
   playwright@1.63.0:
     dependencies:
       playwright-core: 1.63.0
+
+  progress@2.0.3: {}
 
   property-expr@2.0.6: {}
 
@@ -1927,6 +1984,14 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   validate-npm-package-name@8.0.0: {}
+
+  which@1.0.9: {}
+
+  which@7.0.0:
+    dependencies:
+      isexe: 4.0.0
+
+  winreg@1.2.5: {}
 
   wrap-ansi@9.0.2:
     dependencies:
