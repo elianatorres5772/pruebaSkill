@@ -65,6 +65,8 @@ src/
 
 Las step definitions solo conectan Gherkin con Screenplay. Los selectores están en `ui/`, las actividades de negocio en `tasks/`, las consultas de estado en `questions/` y las capacidades del actor en `abilities/`.
 
+Para una explicación detallada del modelo y de cómo agregar rutas y casos, ver [docs/screenplay.md](docs/screenplay.md).
+
 ## Configuración existente
 
 - `playwright.config.ts` conserva el proyecto `chrome`, el canal local y sus opciones de reportería, workers y trazas.
