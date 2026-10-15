@@ -3,9 +3,6 @@ import type { Answerable } from '@serenity-js/core';
 import type { PageElement } from '@serenity-js/web';
 import type { Locator } from 'playwright';
 
-// After the destination is picked, Arajet opens the calendar by itself and
-// keeps the date input disabled while it loads availability. We only click the
-// input when the calendar did not open on its own.
 export const OpenDatePickerWithPlaywright = (
     datePicker: Answerable<PageElement>,
     firstDate: Answerable<PageElement>,

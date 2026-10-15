@@ -39,6 +39,7 @@
   "type": "module",
   "devDependencies": {
     "@cucumber/cucumber": "13.2.1",
+    "@faker-js/faker": "10.6.0",
     "@playwright/test": "^1.63.0",
     "@serenity-js/assertions": "3.48.0",
     "@serenity-js/console-reporter": "3.48.0",

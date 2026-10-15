@@ -1,6 +1,7 @@
 import { AfterAll, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber';
 import { configure, Duration } from '@serenity-js/core';
 import * as playwright from 'playwright';
+import { rmSync } from 'node:fs';
 import * as path from 'node:path';
 
 import {
@@ -12,15 +13,15 @@ import { AutomationActors } from '../../src/screenplay/abilities/AutomationActor
 
 const cucumberStepTimeout = Duration.ofSeconds(90);
 const serenityCueTimeout = Duration.ofSeconds(10);
+const serenityReportDirectory = path.resolve(process.cwd(), 'target/site/serenity');
 
 let context: playwright.BrowserContext | undefined;
 
 setDefaultTimeout(cucumberStepTimeout.inMilliseconds());
 
 BeforeAll({ timeout: 60_000 }, async () => {
-    // A persistent context is required: Arajet protects the passenger-save
-    // endpoint with Cloudflare Turnstile, which only lets a real, persistent
-    // Chrome profile through. See docs/arajet-cloudflare.md.
+    rmSync(serenityReportDirectory, { recursive: true, force: true });
+
     context = await playwright.chromium.launchPersistentContext(
         BROWSER_USER_DATA_DIR,
         {
@@ -37,9 +38,8 @@ BeforeAll({ timeout: 60_000 }, async () => {
         crew: [
             ['@serenity-js/console-reporter', { theme: 'auto' }],
             ['@serenity-js/web:Photographer', { strategy: 'TakePhotosOfFailures' }],
-            // Serenity BDD: JSON results that 'pnpm report:bdd' turns into the Serenity BDD HTML report.
             ['@serenity-js/serenity-bdd', { specDirectory: path.resolve(process.cwd(), 'features') }],
-            ['@serenity-js/core:ArtifactArchiver', { outputDirectory: path.resolve(process.cwd(), 'target/site/serenity') }],
+            ['@serenity-js/core:ArtifactArchiver', { outputDirectory: serenityReportDirectory }],
         ],
         cueTimeout: serenityCueTimeout,
     });

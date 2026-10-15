@@ -1,6 +1,3 @@
-// Opens a Serenity BDD HTML report in the default browser.
-//
-// Usage: node scripts/open-report.mjs <report-directory>
 import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import * as path from 'node:path';

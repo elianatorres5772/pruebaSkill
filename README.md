@@ -94,6 +94,7 @@ pnpm test:cucumber
 | `ARAJET_BASE_URL` | URL base de Arajet | `https://www.arajet.com/es-us/home` |
 | `HEADLESS` | Ejecutar sin ventana | `false` |
 | `BROWSER_USER_DATA_DIR` | Directorio del perfil persistente | `.arajet-browser-profile` |
+| `FAKER_SEED` | Semilla numérica para repetir los mismos datos de pasajeros (generados con Faker) | aleatoria |
 
 ### Notas importantes
 

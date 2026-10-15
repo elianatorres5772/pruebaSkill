@@ -53,14 +53,11 @@ export const ArajetPassengerUI = {
             By.xpath('//input[@aria-label="Terms and conditions acknowledgement"]'),
         ).describedAs('terms and conditions checkbox'),
 
-    // Arajet renders one passenger form at a time, titled "Adulto 1", "Adulto 2"...
     passengerHeading: (passengerNumber: number) =>
         PageElement.located(
             By.xpath(`//h3[starts-with(normalize-space(), ${ xpathLiteral(`Adulto ${ passengerNumber }`) })]`),
         ).describedAs(`Adulto ${ passengerNumber } form`),
 
-    // "Guardar" saves the open passenger and opens the next one. The last
-    // passenger has no "Guardar"; it is submitted together with the booking.
     saveButton: (passengerNumber: number) =>
         PageElement.located(
             By.xpath(`//h3[starts-with(normalize-space(), ${ xpathLiteral(`Adulto ${ passengerNumber }`) })]/ancestor::*[.//button[normalize-space()="Guardar"]][1]//button[normalize-space()="Guardar" and contains(@class, "button--subtle")]`),

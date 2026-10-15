@@ -18,7 +18,6 @@ export interface ArajetBookingParameters {
     adults?: string;
 }
 
-// Arajet limits online bookings to 20 adult passengers.
 const MAX_ADULTS = 20;
 
 const toArajetDate = (date: Date): string => {

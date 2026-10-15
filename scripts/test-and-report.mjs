@@ -1,7 +1,3 @@
-// Runs a test script and then generates the Serenity BDD report, even when
-// tests fail, so failures show up in the report. Exits with the tests' code.
-//
-// Usage: node scripts/test-and-report.mjs <test-script> <report-script> [open-script]
 import { spawnSync } from 'node:child_process';
 
 const [testScript, reportScript, openScript] = process.argv.slice(2);

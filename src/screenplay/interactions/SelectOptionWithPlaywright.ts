@@ -3,11 +3,6 @@ import type { Answerable } from '@serenity-js/core';
 import type { PageElement } from '@serenity-js/web';
 import type { Locator } from 'playwright';
 
-// Arajet opens the destination list on its own right after an origin is picked
-// and re-renders it while it loads the available routes. Clicking the trigger
-// again would close the list, and a click that lands during the re-render is
-// lost, so we only open the dropdown when the option is not on screen and we
-// confirm that the field now shows the selected value.
 export const SelectOptionWithPlaywright = (
     trigger: Answerable<PageElement>,
     option: Answerable<PageElement>,
@@ -15,7 +10,6 @@ export const SelectOptionWithPlaywright = (
     selection?: {
         field: Answerable<PageElement>;
         expectedText: string;
-        // An element the page enables (or expands) only once the selection is accepted.
         acceptedWhenReady?: Answerable<PageElement>;
     },
 ) =>

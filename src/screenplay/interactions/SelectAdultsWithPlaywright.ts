@@ -11,8 +11,6 @@ const nativeLocatorOf = async (actor: AnswersQuestions, element: Answerable<Page
     return pageElement.locator.nativeElement();
 };
 
-// The passengers dropdown starts at 1 adult; we click "+" until the stepper
-// shows the requested number and then close the dropdown again.
 export const SelectAdultsWithPlaywright = (adults: number) =>
     Interaction.where(`#actor selects ${ adults } adult passenger(s)`, async actor => {
         const dropdown = await nativeLocatorOf(actor, ArajetFlightSearchUI.passengersDropdown());

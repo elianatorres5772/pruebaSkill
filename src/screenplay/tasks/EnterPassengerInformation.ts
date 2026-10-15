@@ -6,9 +6,6 @@ import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisible
 import type { ArajetPassengerData, ArajetPrimaryPassengerData } from '../test-data/ArajetPassengerData.js';
 import { ArajetPassengerUI } from '../ui/ArajetPassengerUI.js';
 
-// The passenger forms load after the booking session is created, and saving a
-// passenger calls Arajet's travelers endpoint (behind Cloudflare); both can take
-// several seconds before the next form opens.
 const passengerFormTimeout = 30_000;
 
 const passengerForm = (passengerNumber: number) =>

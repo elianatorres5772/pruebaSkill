@@ -1,0 +1,8 @@
+[
+    { "firstName": "Tony", "lastName": "Stark", "gender": "Masculino" },
+    { "firstName": "Peter", "lastName": "Parker", "gender": "Masculino" },
+    { "firstName": "Natasha", "lastName": "Romanoff", "gender": "Femenino" },
+    { "firstName": "Bruce", "lastName": "Banner", "gender": "Masculino" },
+    { "firstName": "Clark", "lastName": "Kent", "gender": "Masculino" },
+    { "firstName": "Bruce", "lastName": "Wayne", "gender": "Masculino" }
+]

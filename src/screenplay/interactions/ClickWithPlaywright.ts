@@ -3,9 +3,6 @@ import type { Answerable } from '@serenity-js/core';
 import type { PageElement } from '@serenity-js/web';
 import type { Locator, Page as PlaywrightPage } from 'playwright';
 
-// Arajet shows a full-screen loading backdrop while it fetches async data
-// (e.g. nationality options). Clicks are intercepted until it clears, so we
-// wait for the overlay to disappear before clicking.
 const LOADING_OVERLAY = '.loader__backdrop';
 
 const waitForNoLoadingOverlay = async (page: PlaywrightPage): Promise<void> => {
