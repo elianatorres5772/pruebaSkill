@@ -1,3 +1,4 @@
+import { TakeNotes } from '@serenity-js/core';
 import type { Actor, Cast } from '@serenity-js/core';
 import { BrowseTheWebWithPlaywright } from '@serenity-js/playwright';
 import type { Page } from 'playwright';
@@ -17,6 +18,7 @@ export class AutomationActors implements Cast {
                 defaultNavigationTimeout: DEFAULT_NAVIGATION_TIMEOUT,
                 defaultTimeout: DEFAULT_ACTION_TIMEOUT,
             }),
+            TakeNotes.usingAnEmptyNotepad(),
         );
     }
 }

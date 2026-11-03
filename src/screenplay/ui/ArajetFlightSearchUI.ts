@@ -1,6 +1,16 @@
 import { By, PageElement, PageElements } from '@serenity-js/web';
 
+import type { ArajetPassengerType } from '../test-data/ArajetPassengerData.js';
 import { xpathLiteral } from './locator.js';
+
+const passengerRowLabels: Record<ArajetPassengerType, string> = {
+    adult: 'Adultos',
+    child: 'Niños',
+    infant: 'Infante',
+};
+
+const passengerRow = (type: ArajetPassengerType) =>
+    `//arajet-passengers-ibe//div[contains(@class, "passengers__row")][.//span[normalize-space()=${ xpathLiteral(passengerRowLabels[type]) }]]`;
 
 const airportOption = (code: string) =>
     PageElements.located(
@@ -59,15 +69,15 @@ export const ArajetFlightSearchUI = {
             By.xpath('//arajet-passengers-ibe//div[contains(@class, "passengers__body")]'),
         ).describedAs('passengers panel'),
 
-    adultsCount: () =>
+    passengerCount: (type: ArajetPassengerType) =>
         PageElement.located(
-            By.xpath('//arajet-passengers-ibe//div[contains(@class, "passengers__row")][.//span[normalize-space()="Adultos"]]//span[contains(@class, "stepper-value")]'),
-        ).describedAs('adults count'),
+            By.xpath(`${ passengerRow(type) }//span[contains(@class, "stepper-value")]`),
+        ).describedAs(`${ passengerRowLabels[type] } count`),
 
-    increaseAdultsButton: () =>
+    increasePassengersButton: (type: ArajetPassengerType) =>
         PageElement.located(
-            By.xpath('//arajet-passengers-ibe//div[contains(@class, "passengers__row")][.//span[normalize-space()="Adultos"]]//button[@aria-label="Increment"]'),
-        ).describedAs('increase adults button'),
+            By.xpath(`${ passengerRow(type) }//button[@aria-label="Increment"]`),
+        ).describedAs(`increase ${ passengerRowLabels[type] } button`),
 
     searchButton: () =>
         PageElement.located(

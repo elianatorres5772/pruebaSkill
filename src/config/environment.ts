@@ -12,6 +12,9 @@ export const BROWSER_USER_DATA_DIR =
     process.env.BROWSER_USER_DATA_DIR ??
     path.resolve(process.cwd(), '.arajet-browser-profile');
 
+// The parallel runner cleans the report once, so its shards must not wipe each other's results
+export const CLEAN_REPORT_DIRECTORY = process.env.CLEAN_REPORT_DIRECTORY !== 'false';
+
 export const DEFAULT_NAVIGATION_TIMEOUT = 30_000;
 
 export const DEFAULT_ACTION_TIMEOUT = 15_000;

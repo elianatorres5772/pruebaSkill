@@ -6,6 +6,8 @@
   "scripts": {
     "test": "node scripts/test-and-report.mjs test:cucumber report:bdd",
     "test:cucumber": "cucumber-js",
+    "test:cucumber:parallel": "node scripts/run-parallel.mjs",
+    "test:parallel": "node scripts/test-and-report.mjs test:cucumber:parallel report:bdd",
     "test:playwright": "playwright test",
     "test:all": "pnpm test:cucumber && pnpm test:playwright",
     "typecheck": "tsc --noEmit",

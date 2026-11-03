@@ -8,7 +8,7 @@ export const ContinueToSeatSelection = {
         Task.where(
             '#actor continues to seat selection',
             ClickUntilUrlMatches(
-                ArajetPassengerUI.continueButton(),
+                ArajetPassengerUI.submitPassengersButton(),
                 'step=4',
                 'continue to seat selection',
             ),

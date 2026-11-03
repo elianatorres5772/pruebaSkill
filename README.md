@@ -18,7 +18,22 @@ pnpm test:all          # Ejecuta ambos runners
 pnpm typecheck         # Comprobación TypeScript
 pnpm test:open         # Escenarios + reporte Serenity BDD y lo abre en el navegador
 pnpm test:report       # Abre el último reporte Serenity BDD
+pnpm test:parallel     # Escenarios en paralelo + reporte Serenity BDD
 ```
+
+### Ejecución en paralelo
+
+`pnpm test:parallel` reparte los escenarios en varios procesos de Cucumber (`--shard`), cada uno con su propio Chrome, y une los resultados en un único reporte Serenity BDD. El número de procesos se define con `PARALLEL` (por defecto 2):
+
+```powershell
+$env:PARALLEL = '3'
+pnpm test:parallel
+```
+
+- Cada proceso usa un perfil `.arajet-browser-profile-shard-N`, copiado del perfil base la primera vez para conservar la verificación de Cloudflare. Para regenerarlos, borra esas carpetas.
+- La salida de cada proceso lleva el prefijo `[shard N/M]`.
+- Se pueden pasar opciones de Cucumber: `pnpm test:cucumber:parallel --tags @smoke`.
+- Arajet puede limitar o desafiar muchas sesiones simultáneas desde la misma IP; conviene no subir mucho `PARALLEL`.
 
 El runner Cucumber usa el canal `chrome`, por lo que no requiere descargar Chromium. El modo headless es el predeterminado; para abrir el Chrome local se puede ejecutar en PowerShell con:
 

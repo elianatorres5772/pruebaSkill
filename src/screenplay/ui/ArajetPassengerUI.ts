@@ -1,6 +1,20 @@
 import { By, PageElement } from '@serenity-js/web';
 
+import type { ArajetPassengerType } from '../test-data/ArajetPassengerData.js';
 import { xpathLiteral } from './locator.js';
+
+// Forms are numbered across all passengers, e.g. "Adulto 1", "Niños 2", "Infante 3"
+const passengerFormLabels: Record<ArajetPassengerType, string> = {
+    adult: 'Adulto',
+    child: 'Niños',
+    infant: 'Infante',
+};
+
+export const passengerTitle = (type: ArajetPassengerType, passengerNumber: number): string =>
+    `${ passengerFormLabels[type] } ${ passengerNumber }`;
+
+const passengerHeadingXPath = (type: ArajetPassengerType, passengerNumber: number): string =>
+    `//h3[starts-with(normalize-space(), ${ xpathLiteral(passengerTitle(type, passengerNumber)) })]`;
 
 const optionWithText = (text: string) =>
     PageElement.located(
@@ -53,23 +67,18 @@ export const ArajetPassengerUI = {
             By.xpath('//input[@aria-label="Terms and conditions acknowledgement"]'),
         ).describedAs('terms and conditions checkbox'),
 
-    passengerHeading: (passengerNumber: number) =>
+    passengerHeading: (type: ArajetPassengerType, passengerNumber: number) =>
         PageElement.located(
-            By.xpath(`//h3[starts-with(normalize-space(), ${ xpathLiteral(`Adulto ${ passengerNumber }`) })]`),
-        ).describedAs(`Adulto ${ passengerNumber } form`),
+            By.xpath(passengerHeadingXPath(type, passengerNumber)),
+        ).describedAs(`${ passengerTitle(type, passengerNumber) } form`),
 
-    saveButton: (passengerNumber: number) =>
+    saveButton: (type: ArajetPassengerType, passengerNumber: number) =>
         PageElement.located(
-            By.xpath(`//h3[starts-with(normalize-space(), ${ xpathLiteral(`Adulto ${ passengerNumber }`) })]/ancestor::*[.//button[normalize-space()="Guardar"]][1]//button[normalize-space()="Guardar" and contains(@class, "button--subtle")]`),
-        ).describedAs(`save Adulto ${ passengerNumber } button`),
+            By.xpath(`${ passengerHeadingXPath(type, passengerNumber) }/ancestor::*[.//button[normalize-space()="Guardar"]][1]//button[normalize-space()="Guardar" and contains(@class, "button--subtle")]`),
+        ).describedAs(`save ${ passengerTitle(type, passengerNumber) } button`),
 
     submitPassengersButton: () =>
         PageElement.located(
             By.xpath('(//button[normalize-space()="Continuar"])[last()]'),
         ).describedAs('continue with passengers button'),
-
-    continueButton: () =>
-        PageElement.located(
-            By.xpath('//button[contains(@aria-label, "go to step 4")]'),
-        ).describedAs('continue to seat selection'),
 };

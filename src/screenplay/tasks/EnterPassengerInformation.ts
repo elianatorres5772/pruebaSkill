@@ -3,15 +3,19 @@ import { Click, Enter } from '@serenity-js/web';
 
 import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
 import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisibleWithPlaywright.js';
-import type { ArajetPassengerData, ArajetPrimaryPassengerData } from '../test-data/ArajetPassengerData.js';
-import { ArajetPassengerUI } from '../ui/ArajetPassengerUI.js';
+import type {
+    ArajetPassengerData,
+    ArajetPassengerType,
+    ArajetPrimaryPassengerData,
+} from '../test-data/ArajetPassengerData.js';
+import { ArajetPassengerUI, passengerTitle } from '../ui/ArajetPassengerUI.js';
 
 const passengerFormTimeout = 30_000;
 
-const passengerForm = (passengerNumber: number) =>
+const passengerForm = (type: ArajetPassengerType, passengerNumber: number) =>
     WaitUntilVisibleWithPlaywright(
-        ArajetPassengerUI.passengerHeading(passengerNumber),
-        `Adulto ${ passengerNumber } form`,
+        ArajetPassengerUI.passengerHeading(type, passengerNumber),
+        `${ passengerTitle(type, passengerNumber) } form`,
         passengerFormTimeout,
     );
 
@@ -37,28 +41,31 @@ const contactDetails = (passenger: ArajetPrimaryPassengerData) => [
     Enter.theValue(passenger.email).into(ArajetPassengerUI.email()),
 ];
 
-const saveAndOpenNext = (passengerNumber: number) => [
+const saveAndOpenNext = (current: ArajetPassengerData, currentNumber: number, next: ArajetPassengerData) => [
     ClickWithPlaywright(
-        ArajetPassengerUI.saveButton(passengerNumber),
-        `save Adulto ${ passengerNumber }`,
+        ArajetPassengerUI.saveButton(current.type, currentNumber),
+        `save ${ passengerTitle(current.type, currentNumber) }`,
     ),
-    passengerForm(passengerNumber + 1),
+    passengerForm(next.type, currentNumber + 1),
 ];
 
 export const EnterPassengerInformation = {
     with: (passenger: ArajetPrimaryPassengerData) =>
         EnterPassengerInformation.forAll([passenger]),
 
-    forAll: ([primary, ...additional]: [ArajetPrimaryPassengerData, ...ArajetPassengerData[]]) =>
-        Task.where(
-            `#actor enters passenger information for ${ additional.length + 1 } passenger(s)`,
-            passengerForm(1),
+    forAll: (passengers: [ArajetPrimaryPassengerData, ...ArajetPassengerData[]]) => {
+        const [primary, ...additional] = passengers;
+
+        return Task.where(
+            `#actor enters passenger information for ${ passengers.length } passenger(s)`,
+            passengerForm(primary.type, 1),
             ...personalDetails(primary),
             ...contactDetails(primary),
             ...additional.flatMap((passenger, index) => [
-                ...saveAndOpenNext(index + 1),
+                ...saveAndOpenNext(passengers[index], index + 1, passenger),
                 ...personalDetails(passenger),
             ]),
             Click.on(ArajetPassengerUI.termsCheckbox()),
-        ),
+        );
+    },
 };

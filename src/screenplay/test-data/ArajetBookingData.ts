@@ -7,6 +7,8 @@ export interface ArajetBookingData {
     returnDate: string;
     bundle: ArajetBundle;
     adults: number;
+    children: number;
+    infants: number;
 }
 
 export interface ArajetBookingParameters {
@@ -16,6 +18,8 @@ export interface ArajetBookingParameters {
     arrivalDay: string;
     bundle: string;
     adults?: string;
+    children?: string;
+    infants?: string;
 }
 
 const MAX_ADULTS = 20;
@@ -36,6 +40,16 @@ const addDaysFromToday = (days: number): Date => {
     return date;
 };
 
+const wholeNumberBetween = (value: string, label: string, min: number, max: number): number => {
+    const parsed = Number(value);
+
+    if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
+        throw new Error(`${ label } must be a whole number between ${ min } and ${ max }`);
+    }
+
+    return parsed;
+};
+
 const parseBundle = (bundle: string): ArajetBundle => {
     if (bundle === 'Basic' || bundle === 'Comfort' || bundle === 'Extra') {
         return bundle;
@@ -54,11 +68,10 @@ export const buildArajetBookingData = (
         throw new Error('Travel days must be whole numbers');
     }
 
-    const adults = Number(parameters.adults ?? '1');
-
-    if (!Number.isInteger(adults) || adults < 1 || adults > MAX_ADULTS) {
-        throw new Error(`Adults must be a whole number between 1 and ${ MAX_ADULTS }`);
-    }
+    const adults = wholeNumberBetween(parameters.adults ?? '1', 'Adults', 1, MAX_ADULTS);
+    const children = wholeNumberBetween(parameters.children ?? '0', 'Children', 0, MAX_ADULTS);
+    // Each infant must travel with an adult
+    const infants = wholeNumberBetween(parameters.infants ?? '0', 'Infants', 0, adults);
 
     if (arrivalDay <= outDay) {
         throw new Error('The return day must be after the outbound day');
@@ -71,5 +84,7 @@ export const buildArajetBookingData = (
         returnDate: toArajetDate(addDaysFromToday(arrivalDay)),
         bundle: parseBundle(parameters.bundle),
         adults,
+        children,
+        infants,
     };
 };

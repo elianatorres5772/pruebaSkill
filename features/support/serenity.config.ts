@@ -6,6 +6,7 @@ import * as path from 'node:path';
 
 import {
     BROWSER_CHANNEL,
+    CLEAN_REPORT_DIRECTORY,
     HEADLESS,
     BROWSER_USER_DATA_DIR,
 } from '../../src/config/environment.js';
@@ -20,7 +21,9 @@ let context: playwright.BrowserContext | undefined;
 setDefaultTimeout(cucumberStepTimeout.inMilliseconds());
 
 BeforeAll({ timeout: 60_000 }, async () => {
-    rmSync(serenityReportDirectory, { recursive: true, force: true });
+    if (CLEAN_REPORT_DIRECTORY) {
+        rmSync(serenityReportDirectory, { recursive: true, force: true });
+    }
 
     context = await playwright.chromium.launchPersistentContext(
         BROWSER_USER_DATA_DIR,

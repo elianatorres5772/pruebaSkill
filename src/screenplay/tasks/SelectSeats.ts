@@ -1,27 +1,26 @@
 import { Task } from '@serenity-js/core';
 
 import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
+import { SelectRandomSeatsWithPlaywright } from '../interactions/SelectRandomSeatsWithPlaywright.js';
 import { ArajetSeatMapUI } from '../ui/ArajetSeatMapUI.js';
 
 export const SelectSeats = {
-    forEachFlight: () =>
+    later: () =>
         Task.where(
-            '#actor selects an available seat for each flight',
+            '#actor skips the seat selection',
             ClickWithPlaywright(
-                ArajetSeatMapUI.availableSeat(),
-                'the first available seat on the first flight',
+                ArajetSeatMapUI.skipButton(),
+                'the skip seats button',
             ),
             ClickWithPlaywright(
-                ArajetSeatMapUI.nextFlightButton(),
-                'the next flight button',
+                ArajetSeatMapUI.selectLaterButton(),
+                'the select seats later button',
             ),
-            ClickWithPlaywright(
-                ArajetSeatMapUI.availableSeat(),
-                'the first available seat on the return flight',
-            ),
-            ClickWithPlaywright(
-                ArajetSeatMapUI.saveSeatsButton(),
-                'the save seats button',
-            ),
+        ),
+
+    randomly: () =>
+        Task.where(
+            '#actor selects random available seats',
+            SelectRandomSeatsWithPlaywright(),
         ),
 };
