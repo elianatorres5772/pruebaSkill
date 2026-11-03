@@ -56,19 +56,46 @@ const currentFlightSeatOf = async (passenger: Locator): Promise<string> => {
     return await badge.count() > 0 ? (await badge.innerText()).trim() : '';
 };
 
+// e.g. "available standard: 27, occupied preferred: 28, blocked exit: 12"
+const seatMapSummary = async (actor: AnswersQuestions): Promise<string> => {
+    const counts = new Map<string, number>();
+
+    for (const seat of await nativeLocatorsOf(actor, ArajetSeatMapUI.allSeats())) {
+        const key = `${ await seat.getAttribute('data-seat-state') } ${ await seat.getAttribute('data-seat-type') }`;
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+
+    return counts.size > 0
+        ? [...counts].map(([key, count]) => `${ key }: ${ count }`).join(', ')
+        : 'no seats shown';
+};
+
+// Seats are read for each passenger, as the ones already taken are no longer available.
+// The seat map of the next flight loads after its header changes, so wait for its seats.
+const availableSeatsOn = async (actor: AnswersQuestions, flight: number): Promise<Locator[]> => {
+    let seats: Locator[] = [];
+
+    try {
+        await waitUntil(
+            async () => (seats = await nativeLocatorsOf(actor, ArajetSeatMapUI.availableSeats())).length > 0,
+            'no available seats',
+        );
+    }
+    catch {
+        throw new Error(
+            `There are no available seats on flight ${ flight } after ${ seatMapTimeout / 1000 }s. Seat map: ${ await seatMapSummary(actor) }`,
+        );
+    }
+
+    return seats;
+};
+
 const selectRandomSeatFor = async (actor: AnswersQuestions, passenger: Locator, flight: number): Promise<void> => {
     if (await passenger.getAttribute('aria-pressed') !== 'true') {
         await passenger.click();
     }
 
-    // Seats are read for each passenger, as the ones already taken are no longer available
-    const seats = await nativeLocatorsOf(actor, ArajetSeatMapUI.availableSeats());
-
-    if (seats.length === 0) {
-        throw new Error(`There are no available seats left on flight ${ flight }`);
-    }
-
-    const seat = faker.helpers.arrayElement(seats);
+    const seat = faker.helpers.arrayElement(await availableSeatsOn(actor, flight));
     const seatCode = await seatCodeOf(seat);
     await seat.click();
 

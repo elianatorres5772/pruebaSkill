@@ -1,6 +1,10 @@
 import { By, PageElement, PageElements } from '@serenity-js/web';
 
 export const ArajetSeatMapUI = {
+    allSeats: () =>
+        PageElements.located(By.xpath('//arajet-seat-item//button'))
+            .describedAs('seats'),
+
     // Exit row seats are left out: they come with extra requirements for the passenger
     availableSeats: () =>
         PageElements.located(
