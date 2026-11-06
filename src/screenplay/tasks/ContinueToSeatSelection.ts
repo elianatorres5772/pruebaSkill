@@ -1,6 +1,6 @@
 import { Task } from '@serenity-js/core';
 
-import { ClickUntilUrlMatches } from '../interactions/ClickUntilUrlMatches.js';
+import { ClickUntilUrlMatches, nextBookingStep } from '../interactions/ClickUntilUrlMatches.js';
 import { ArajetPassengerUI } from '../ui/ArajetPassengerUI.js';
 
 export const ContinueToSeatSelection = {
@@ -9,7 +9,7 @@ export const ContinueToSeatSelection = {
             '#actor continues to seat selection',
             ClickUntilUrlMatches(
                 ArajetPassengerUI.submitPassengersButton(),
-                'step=4',
+                nextBookingStep,
                 'continue to seat selection',
             ),
         ),

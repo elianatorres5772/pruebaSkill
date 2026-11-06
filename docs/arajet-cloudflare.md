@@ -50,6 +50,10 @@ Variables de entorno relevantes (ver `src/config/environment.ts`):
 | `HEADLESS`              | `false`     | `true` = sin ventana. **El paso de pasajero→asientos fallará con 403 de Cloudflare.** |
 | `BROWSER_USER_DATA_DIR` | `.arajet-browser-profile` | Directorio del perfil persistente. |
 | `ARAJET_BASE_URL`       | `https://www.arajet.com/es-us/home` | URL base. |
+| `ARAJET_SECRET`         | —           | Cabecera de acceso a UAT; sin ella la UAT responde 403. |
+| `ARAJET_SECRET_HEADER`  | `x-secret`  | Nombre de esa cabecera. |
+
+Estas variables pueden ir en un archivo `.env` en la raíz (no se sube a git), que se carga automáticamente.
 
 ## Limitaciones conocidas
 

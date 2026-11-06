@@ -3,15 +3,29 @@ import type { Answerable } from '@serenity-js/core';
 import { BrowseTheWeb, type PageElement } from '@serenity-js/web';
 import type { Locator } from 'playwright';
 
+// The booking pages are numbered in the URL ("step=4"), but sites differ in how many steps they have
+export const nextBookingStep = (url: URL): string => {
+    const step = Number(url.searchParams.get('step'));
+
+    if (!Number.isInteger(step) || step < 1) {
+        throw new Error(`Could not read the booking step from ${ url.href }`);
+    }
+
+    return `step=${ step + 1 }`;
+};
+
 export const ClickUntilUrlMatches = (
     element: Answerable<PageElement>,
-    urlFragment: string,
+    expectedUrlFragment: string | ((currentUrl: URL) => string),
     description: string,
 ) =>
     Interaction.where(
-        `#actor clicks ${ description } until the page reaches ${ urlFragment }`,
+        `#actor clicks ${ description } until the page reaches ${ typeof expectedUrlFragment === 'string' ? expectedUrlFragment : 'the next step' }`,
         async actor => {
             const page = await BrowseTheWeb.as(actor).currentPage();
+            const urlFragment = typeof expectedUrlFragment === 'string'
+                ? expectedUrlFragment
+                : expectedUrlFragment(await page.url());
             let lastError: unknown;
 
             for (let attempt = 0; attempt < 4; attempt += 1) {

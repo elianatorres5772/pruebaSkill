@@ -5,7 +5,7 @@ import type { Locator, Page as PlaywrightPage } from 'playwright';
 
 const LOADING_OVERLAY = '.loader__backdrop';
 
-const waitForNoLoadingOverlay = async (page: PlaywrightPage): Promise<void> => {
+export const waitForNoLoadingOverlay = async (page: PlaywrightPage): Promise<void> => {
     await page
         .waitForFunction(
             (selector: string) =>

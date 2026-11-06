@@ -5,6 +5,8 @@ import { rmSync } from 'node:fs';
 import * as path from 'node:path';
 
 import {
+    ARAJET_SECRET,
+    ARAJET_SECRET_HEADER,
     BROWSER_CHANNEL,
     CLEAN_REPORT_DIRECTORY,
     HEADLESS,
@@ -33,6 +35,18 @@ BeforeAll({ timeout: 60_000 }, async () => {
             args: ['--disable-blink-features=AutomationControlled'],
         },
     );
+
+    // Same as the ModHeader extension, but only for Arajet hosts so the secret is not sent to third parties
+    const secret = ARAJET_SECRET;
+
+    if (secret) {
+        await context.route(
+            url => url.hostname === 'arajet.com' || url.hostname.endsWith('.arajet.com'),
+            route => route.continue({
+                headers: { ...route.request().headers(), [ARAJET_SECRET_HEADER]: secret },
+            }),
+        );
+    }
 
     const page = context.pages()[0] ?? (await context.newPage());
 

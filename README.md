@@ -108,7 +108,9 @@ pnpm test:cucumber
 
 | Variable | Descripción | Valor por defecto |
 |----------|-------------|-------------------|
-| `ARAJET_BASE_URL` | URL base de Arajet | `https://www.arajet.com/es-us/home` |
+| `ARAJET_BASE_URL` | URL base de Arajet (UAT: `https://uat-www.arajet.com/es-do/home`) | `https://www.arajet.com/es-us/home` |
+| `ARAJET_SECRET` | Valor de la cabecera de acceso a entornos de prueba (equivale a ModHeader). Solo se envía a dominios `arajet.com` | sin cabecera |
+| `ARAJET_SECRET_HEADER` | Nombre de esa cabecera | `x-secret` |
 | `HEADLESS` | Ejecutar sin ventana | `false` |
 | `BROWSER_USER_DATA_DIR` | Directorio del perfil persistente | `.arajet-browser-profile` |
 | `FAKER_SEED` | Semilla numérica para repetir los mismos datos de pasajeros (generados con Faker) | aleatoria |

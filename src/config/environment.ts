@@ -1,8 +1,21 @@
+import { existsSync } from 'node:fs';
 import * as path from 'node:path';
+
+// Local settings and secrets (e.g. ARAJET_SECRET) live in .env, which is not committed
+const envFile = path.resolve(process.cwd(), '.env');
+
+if (existsSync(envFile)) {
+    process.loadEnvFile(envFile);
+}
 
 export const TEST_BASE_URL = process.env.BASE_URL ?? 'https://playwright.dev/';
 
 export const ARAJET_BASE_URL = process.env.ARAJET_BASE_URL ?? 'https://www.arajet.com/es-us/home';
+
+// Test environments (e.g. UAT) only let in requests that carry this header
+export const ARAJET_SECRET_HEADER = process.env.ARAJET_SECRET_HEADER ?? 'x-secret';
+
+export const ARAJET_SECRET = process.env.ARAJET_SECRET;
 
 export const BROWSER_CHANNEL = 'chrome' as const;
 

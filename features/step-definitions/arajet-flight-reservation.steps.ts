@@ -56,7 +56,7 @@ When('{actor} searches for a round trip using:', async (actor: Actor, table: Dat
 
 Then('{pronoun} should see available outbound flights', async (actor: Actor) => {
     await actor.attemptsTo(
-        Ensure.that(OutboundFlightResults(), equals('Selecciona Vuelo De Salida')),
+        Ensure.that(OutboundFlightResults(), matches(/^selecciona vuelo de salida$/i)),
     );
 });
 

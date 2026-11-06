@@ -59,7 +59,8 @@ export const ArajetPassengerUI = {
 
     email: () =>
         PageElement.located(
-            By.xpath('//mat-label[normalize-space()="Correo Electrónico *"]/ancestor::div[contains(@class, "mat-mdc-text-field-wrapper")]//input'),
+            // "Correo Electrónico *" on production, "Correo electrónico *" on UAT
+            By.xpath('//mat-label[translate(normalize-space(), "ABCDEFGHIJKLMNOPQRSTUVWXYZÉ", "abcdefghijklmnopqrstuvwxyzé")="correo electrónico *"]/ancestor::div[contains(@class, "mat-mdc-text-field-wrapper")]//input'),
         ).describedAs('email field'),
 
     termsCheckbox: () =>
