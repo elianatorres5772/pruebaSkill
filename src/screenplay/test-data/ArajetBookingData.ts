@@ -24,6 +24,11 @@ export interface ArajetBookingParameters {
 
 const MAX_ADULTS = 20;
 
+// The bookings must be ready for check-in, which opens 72 hours before departure. A flight up to
+// two days from today always leaves in less than 72 hours; today's flights may have already left.
+const MIN_DAYS_TO_DEPARTURE = 1;
+const MAX_DAYS_TO_DEPARTURE = 2;
+
 const toArajetDate = (date: Date): string => {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -72,6 +77,12 @@ export const buildArajetBookingData = (
     const children = wholeNumberBetween(parameters.children ?? '0', 'Children', 0, MAX_ADULTS);
     // Each infant must travel with an adult
     const infants = wholeNumberBetween(parameters.infants ?? '0', 'Infants', 0, adults);
+
+    if (outDay < MIN_DAYS_TO_DEPARTURE || outDay > MAX_DAYS_TO_DEPARTURE) {
+        throw new Error(
+            `The outbound day must be ${ MIN_DAYS_TO_DEPARTURE } to ${ MAX_DAYS_TO_DEPARTURE } days from today, so the booking can be checked in (check-in opens 72 hours before departure)`,
+        );
+    }
 
     if (arrivalDay <= outDay) {
         throw new Error('The return day must be after the outbound day');

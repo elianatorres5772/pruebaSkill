@@ -1,0 +1,32 @@
+[
+  {
+    "confirmationNumber": "41LVA9",
+    "lastName": "Kent",
+    "firstName": "Clark",
+    "email": "clark_kent@example.com",
+    "origin": "MIA",
+    "destination": "PUJ",
+    "departureDate": "2026-11-14",
+    "returnDate": "2026-11-21",
+    "adults": 2,
+    "children": 0,
+    "infants": 0,
+    "site": "uat-www.arajet.com",
+    "bookedAt": "2026-11-13T17:02:06.849Z"
+  },
+  {
+    "confirmationNumber": "O1AUAW",
+    "lastName": "Romanoff",
+    "firstName": "Natasha",
+    "email": "natasha.romanoff@example.com",
+    "origin": "MIA",
+    "destination": "PUJ",
+    "departureDate": "2026-11-15",
+    "returnDate": "2026-11-22",
+    "adults": 2,
+    "children": 1,
+    "infants": 1,
+    "site": "uat-www.arajet.com",
+    "bookedAt": "2026-11-13T17:02:12.650Z"
+  }
+]

@@ -1,9 +1,10 @@
 import { Given, Then, When } from '@cucumber/cucumber';
 import type { DataTable } from '@cucumber/cucumber';
 import { containItemsWhereEachItem, Ensure, equals, includes, isTrue, matches, not, property } from '@serenity-js/assertions';
-import { notes } from '@serenity-js/core';
+import { Log, notes } from '@serenity-js/core';
 import type { Actor } from '@serenity-js/core';
 
+import { ConfirmationMessage, ConfirmationNumber } from '../../src/screenplay/questions/ArajetConfirmation.js';
 import { BookingExtraAdded, PassengerExtraQuantities } from '../../src/screenplay/questions/ArajetExtras.js';
 import { OutboundFlightResults, PassengerInformationStep } from '../../src/screenplay/questions/ArajetFlightResults.js';
 import { AssignedSeats, SeatSummary } from '../../src/screenplay/questions/ArajetSeatMap.js';
@@ -11,18 +12,24 @@ import { BookedPassengers, PassengerSubmitButtonState } from '../../src/screenpl
 import { AddExtras } from '../../src/screenplay/tasks/AddExtras.js';
 import { ContinueToSeatSelection } from '../../src/screenplay/tasks/ContinueToSeatSelection.js';
 import { buildArajetBookingData } from '../../src/screenplay/test-data/ArajetBookingData.js';
-import type { ArajetBookingParameters } from '../../src/screenplay/test-data/ArajetBookingData.js';
+import type { ArajetBookingData, ArajetBookingParameters } from '../../src/screenplay/test-data/ArajetBookingData.js';
 import { buildArajetExtras } from '../../src/screenplay/test-data/ArajetExtrasData.js';
 import type { ArajetExtraSelection } from '../../src/screenplay/test-data/ArajetExtrasData.js';
 import { syntheticPassengers } from '../../src/screenplay/test-data/ArajetPassengerData.js';
+import type { ArajetPrimaryPassengerData } from '../../src/screenplay/test-data/ArajetPassengerData.js';
+import { SaveBookingRecord } from '../../src/screenplay/interactions/SaveBookingRecord.js';
 import { EnterPassengerInformation } from '../../src/screenplay/tasks/EnterPassengerInformation.js';
 import { OpenArajet } from '../../src/screenplay/tasks/OpenArajet.js';
+import { ContinueToPayment, PayForBooking } from '../../src/screenplay/tasks/PayForBooking.js';
+import { buildArajetCardPayment } from '../../src/screenplay/test-data/ArajetPaymentData.js';
 import { SearchForFlight } from '../../src/screenplay/tasks/SearchForFlight.js';
 import { SelectOutboundFlight, SelectReturnFlight } from '../../src/screenplay/tasks/SelectFlight.js';
 import { SelectSeats } from '../../src/screenplay/tasks/SelectSeats.js';
 
 interface BookingNotes {
     extras: ArajetExtraSelection[];
+    booking: ArajetBookingData;
+    primaryPassenger: ArajetPrimaryPassengerData;
 }
 
 const bookingParametersFrom = (table: DataTable): ArajetBookingParameters => {
@@ -51,7 +58,10 @@ Given('{actor} is on the Arajet home page', async (actor: Actor) => {
 When('{actor} searches for a round trip using:', async (actor: Actor, table: DataTable) => {
     const booking = buildArajetBookingData(bookingParametersFrom(table));
 
-    await actor.attemptsTo(SearchForFlight.onArajet(booking));
+    await actor.attemptsTo(
+        notes<BookingNotes>().set('booking', booking),
+        SearchForFlight.onArajet(booking),
+    );
 });
 
 Then('{pronoun} should see available outbound flights', async (actor: Actor) => {
@@ -77,8 +87,11 @@ Then('{pronoun} should reach the passenger information step', async (actor: Acto
 When(
     '{pronoun} enters the details for {int} adults, {int} children and {int} infants',
     async (actor: Actor, adults: number, children: number, infants: number) => {
+        const passengers = syntheticPassengers({ adults, children, infants });
+
         await actor.attemptsTo(
-            EnterPassengerInformation.forAll(syntheticPassengers({ adults, children, infants })),
+            notes<BookingNotes>().set('primaryPassenger', passengers[0]),
+            EnterPassengerInformation.forAll(passengers),
         );
     },
 );
@@ -141,6 +154,28 @@ Then('{pronoun} should see every chosen extra added', async (actor: Actor) => {
                     PassengerExtraQuantities(extra),
                     containItemsWhereEachItem(equals(extra.quantity)),
                 ),
+        ),
+    );
+});
+When('{pronoun} continues to the review and payment step', async (actor: Actor) => {
+    await actor.attemptsTo(ContinueToPayment.fromExtrasStep());
+});
+
+When('{pronoun} pays with a credit card using:', async (actor: Actor, table: DataTable) => {
+    const { number, expiry, cvv } = table.rowsHash();
+
+    await actor.attemptsTo(PayForBooking.withCard(buildArajetCardPayment({ number, expiry, cvv })));
+});
+
+Then('{pronoun} should see the booking confirmed', async (actor: Actor) => {
+    await actor.attemptsTo(
+        Ensure.that(ConfirmationMessage(), equals('Su vuelo está confirmado')),
+        Ensure.that(ConfirmationNumber(), matches(/^[A-Z0-9]{6}$/)),
+        Log.the(ConfirmationNumber()),
+        SaveBookingRecord(
+            ConfirmationNumber(),
+            notes<BookingNotes>().get('booking'),
+            notes<BookingNotes>().get('primaryPassenger'),
         ),
     );
 });

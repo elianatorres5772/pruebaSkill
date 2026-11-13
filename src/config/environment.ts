@@ -17,6 +17,9 @@ export const ARAJET_SECRET_HEADER = process.env.ARAJET_SECRET_HEADER ?? 'x-secre
 
 export const ARAJET_SECRET = process.env.ARAJET_SECRET;
 
+// Every confirmed booking is added to this file, outside target/ so it survives each run
+export const BOOKINGS_FILE = path.resolve(process.cwd(), process.env.BOOKINGS_FILE ?? 'bookings/arajet-bookings.json');
+
 export const BROWSER_CHANNEL = 'chrome' as const;
 
 export const HEADLESS = process.env.HEADLESS === 'true';

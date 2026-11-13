@@ -1,10 +1,11 @@
 Feature: Arajet flight reservation
   As a passenger travelling with other adults, children and infants
   I want to search for a flight, fill in every passenger's details and choose extra services
-  So that I can continue with my reservation
+  So that I can pay for my reservation with a credit card and get it confirmed
 
   Children are 2 to 12 years old and infants 0 to 2 years old.
   Each infant travels with an adult, so there cannot be more infants than adults.
+  The outbound flight leaves 1 or 2 days from today, within the 72 hours before departure when check-in is open.
 
   Background:
     Given Alice is on the Arajet home page
@@ -41,13 +42,20 @@ Feature: Arajet flight reservation
     Then she should have a seat on both flights for <adults> adults and <children> children
     When she adds the extras "<extras>"
     Then she should see every chosen extra added
+    When she continues to the review and payment step
+    And she pays with a credit card using:
+      | field  | value            |
+      | number | 4000000000001000 |
+      | expiry | 01/2027          |
+      | cvv    | 123              |
+    Then she should see the booking confirmed
 
     Examples:
       | origin | destination | outDay | arrivalDay | bundle  | adults | children | infants | extras                          |
-      | MIA    | PUJ         | 15     | 22         | Comfort | 2      | 0        | 0       | 1; 5                            |
-      | MIA    | PUJ         | 15     | 22         | Comfort | 2      | 1        | 1       | 2; 3:1:outbound:2; 6:3:return; 9:2 |
-      #| MIA    | PUJ         | 20     | 27         | Comfort | 3      | 2        | 0       | 4:all:both                      |
-      #| MIA    | PUJ         | 25     | 32         | Comfort | 4      | 0        | 2       | 7:4:outbound                    |
+      | MIA    | PUJ         | 1      | 8          | Comfort | 2      | 0        | 0       | 1; 5                            |
+      | MIA    | PUJ         | 2      | 9          | Comfort | 2      | 1        | 1       | 2; 3:1:outbound:2; 6:3:return; 9:2 |
+      #| MIA    | PUJ         | 1      | 8          | Comfort | 3      | 2        | 0       | 4:all:both                      |
+      #| MIA    | PUJ         | 2      | 9          | Comfort | 4      | 0        | 2       | 7:4:outbound                    |
 
   # TODO: Implementar escenarios negativos
   # - Search with invalid dates
