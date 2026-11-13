@@ -51,7 +51,8 @@ export const ArajetFlightSearchUI = {
 
     date: (date: string) =>
         PageElement.located(
-            By.xpath(`//span[@data-date=${ xpathLiteral(date) }]`),
+            // With two months shown, a date can also appear greyed out (p-disabled) as filler in the other month
+            By.xpath(`//span[@data-date=${ xpathLiteral(date) }][not(contains(concat(" ", normalize-space(@class), " "), " p-disabled "))]`),
         ).describedAs(`${ date } travel date`),
 
     continueButton: () =>

@@ -30,7 +30,7 @@ export const ArajetFlightResultsUI = {
     // Only shown on the current site, between the flights and the passengers steps
     flightSummaryContinueButton: () =>
         PageElement.located(
-            By.xpath('//button[contains(@class, "button--primary")][normalize-space()="Continuar"]'),
+            By.xpath('//button[contains(@class, "button--primary")][normalize-space()="Continuar"][not(contains(@data-testid, "passenger-details"))]'),
         ).describedAs('flight summary continue button'),
 
     passengerHeading: () =>

@@ -78,7 +78,8 @@ export const ContinuePastFlightSummaryWithPlaywright = () =>
         const summaryContinue = await nativeLocatorOf(actor, ArajetFlightResultsUI.flightSummaryContinueButton());
         const passengerHeading = await nativeLocatorOf(actor, ArajetFlightResultsUI.passengerHeading());
 
-        if (await waitForAnyOf([summaryContinue, passengerHeading], flightsTimeout) === summaryContinue) {
+        // The passenger page has its own "Continuar" button, so check for it first
+        if (await waitForAnyOf([passengerHeading, summaryContinue], flightsTimeout) === summaryContinue) {
             await summaryContinue.click();
         }
     });
