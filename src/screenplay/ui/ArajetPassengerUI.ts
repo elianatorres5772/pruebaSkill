@@ -21,6 +21,9 @@ const optionWithText = (text: string) =>
         By.xpath(`//*[@role="option"][normalize-space()=${ xpathLiteral(text) }]`),
     );
 
+// The save button reads "Guardar" or "GUARDAR" depending on the site
+const SAVE_TEXT = 'translate(normalize-space(), "GUARDA", "guarda")="guardar"';
+
 export const ArajetPassengerUI = {
     firstName: () =>
         PageElement.located(By.xpath('//input[@name="firstName"]'))
@@ -59,8 +62,12 @@ export const ArajetPassengerUI = {
 
     email: () =>
         PageElement.located(
-            // "Correo Electrónico *" on production, "Correo electrónico *" on UAT
-            By.xpath('//mat-label[translate(normalize-space(), "ABCDEFGHIJKLMNOPQRSTUVWXYZÉ", "abcdefghijklmnopqrstuvwxyzé")="correo electrónico *"]/ancestor::div[contains(@class, "mat-mdc-text-field-wrapper")]//input'),
+            // Found by its form control, as the label keeps changing ("Correo Electrónico *",
+            // "CORREO ELECTRÓNICO *"); the label is the fallback for sites without that control name
+            By.xpath(
+                '(//input[@formcontrolname="bookingPassengerEmail"]'
+                + ' | //mat-label[translate(normalize-space(), "ABCDEFGHIJKLMNOPQRSTUVWXYZÉÓ", "abcdefghijklmnopqrstuvwxyzéó")="correo electrónico *"]/ancestor::div[contains(@class, "mat-mdc-text-field-wrapper")]//input)[1]',
+            ),
         ).describedAs('email field'),
 
     termsCheckbox: () =>
@@ -75,7 +82,7 @@ export const ArajetPassengerUI = {
 
     saveButton: (type: ArajetPassengerType, passengerNumber: number) =>
         PageElement.located(
-            By.xpath(`${ passengerHeadingXPath(type, passengerNumber) }/ancestor::*[.//button[normalize-space()="Guardar"]][1]//button[normalize-space()="Guardar" and contains(@class, "button--subtle")]`),
+            By.xpath(`${ passengerHeadingXPath(type, passengerNumber) }/ancestor::*[.//button[${ SAVE_TEXT }]][1]//button[${ SAVE_TEXT } and contains(@class, "button--subtle")]`),
         ).describedAs(`save ${ passengerTitle(type, passengerNumber) } button`),
 
     submitPassengersButton: () =>

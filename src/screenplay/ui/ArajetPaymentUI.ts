@@ -6,7 +6,11 @@ const testId = (id: string): string => `[data-testid="${ id }"]`;
 
 export const ArajetPaymentUI = {
     reviewAndPaymentButton: () =>
-        PageElement.located(By.xpath('//button[contains(normalize-space(), "revisión y pago")]'))
+        // "Siguiente: revisión y pago" or "SIGUIENTE: REVISIÓN Y PAGO", depending on the site
+        PageElement.located(By.xpath(
+            '(//button[@data-testid="ibe.extras.continue"]'
+            + ' | //button[contains(translate(normalize-space(), "REVISÓNYPAG", "revisónypag"), "revisión y pago")])[1]',
+        ))
             .describedAs('next: review and payment button'),
 
     creditCardMethodButton: () =>

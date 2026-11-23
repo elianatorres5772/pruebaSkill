@@ -1,6 +1,7 @@
 export type ArajetFlight = 'outbound' | 'return';
 
-const BOOKING_EXTRAS = ['Asistencia en Viaje', 'Reembolso total'] as const;
+// "Reembolso Flex" used to be called "Reembolso total"
+const BOOKING_EXTRAS = ['Asistencia en Viaje', 'Reembolso Flex'] as const;
 
 const PASSENGER_EXTRAS = [
     'Equipaje en Bodega 23 kg',

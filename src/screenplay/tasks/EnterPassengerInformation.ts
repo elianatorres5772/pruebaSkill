@@ -2,6 +2,7 @@ import { Task } from '@serenity-js/core';
 import { Click, Enter } from '@serenity-js/web';
 
 import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
+import { ChooseFromAutocompleteWithPlaywright } from '../interactions/ChooseFromAutocompleteWithPlaywright.js';
 import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisibleWithPlaywright.js';
 import type {
     ArajetPassengerData,
@@ -23,19 +24,21 @@ const personalDetails = (passenger: ArajetPassengerData) => [
     Enter.theValue(passenger.firstName).into(ArajetPassengerUI.firstName()),
     Enter.theValue(passenger.lastName).into(ArajetPassengerUI.lastName()),
     Enter.theValue(passenger.dateOfBirth).into(ArajetPassengerUI.dateOfBirth()),
-    Enter.theValue(passenger.nationality).into(ArajetPassengerUI.nationality()),
-    ClickWithPlaywright(
+    ChooseFromAutocompleteWithPlaywright(
+        passenger.nationality,
+        ArajetPassengerUI.nationality(),
         ArajetPassengerUI.nationalityOption(passenger.nationality),
-        `${ passenger.nationality } nationality option`,
+        'the nationality field',
     ),
     Click.on(ArajetPassengerUI.gender(passenger.gender)),
 ];
 
 const contactDetails = (passenger: ArajetPrimaryPassengerData) => [
-    Enter.theValue(passenger.phoneCountryCode).into(ArajetPassengerUI.phoneCountryCode()),
-    ClickWithPlaywright(
+    ChooseFromAutocompleteWithPlaywright(
+        passenger.phoneCountryCode,
+        ArajetPassengerUI.phoneCountryCode(),
         ArajetPassengerUI.phoneCountryCodeOption(passenger.phoneCountryCode),
-        `${ passenger.phoneCountryCode } phone country code option`,
+        'the phone country code field',
     ),
     Enter.theValue(passenger.phoneNumber).into(ArajetPassengerUI.phoneNumber()),
     Enter.theValue(passenger.email).into(ArajetPassengerUI.email()),

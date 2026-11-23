@@ -6,7 +6,8 @@ import type { Locator } from 'playwright';
 
 import { ArajetSeatMapUI } from '../ui/ArajetSeatMapUI.js';
 
-const seatMapTimeout = 30_000;
+// The seat map of the next flight can take a while to load on UAT
+const seatMapTimeout = 60_000;
 
 const nativeLocatorOf = async (actor: AnswersQuestions, element: Answerable<PageElement>): Promise<Locator> => {
     const pageElement = await actor.answer(element);
@@ -123,7 +124,8 @@ export const SelectRandomSeatsWithPlaywright = () =>
                 actor,
                 flight < total ? ArajetSeatMapUI.nextFlightButton() : ArajetSeatMapUI.saveSeatsButton(),
             );
-            await button.click();
+            // The button can take a while to show up after the last seat, while the seat prices are updated
+            await button.click({ timeout: seatMapTimeout });
         }
 
         const heading = await nativeLocatorOf(actor, ArajetSeatMapUI.heading());

@@ -13,7 +13,7 @@ Feature: Arajet flight reservation
   # extras column: items separated by ";", each one as extra[:passenger[:flight[:quantity]]]
   #   extra: the name or the position of the extra, e.g. "1; 5:all:both; 3:1:outbound:2"
   # Extras for the whole booking (no passenger, flight or quantity):
-  #   1 Asistencia en Viaje, 2 Reembolso total
+  #   1 Asistencia en Viaje, 2 Reembolso Flex
   # Extras per passenger:
   #   3 Equipaje en Bodega 23 kg, 4 Equipaje en cabina 12 kg, 5 Acceso Prioritario, 6 Pa' Picar Combo,
   #   7 Pa' Brindar Combo, 8 Instrumento Musical, 9 Equipaje Deportivo
@@ -52,10 +52,10 @@ Feature: Arajet flight reservation
 
     Examples:
       | origin | destination | outDay | arrivalDay | bundle  | adults | children | infants | extras                          |
-      | MIA    | PUJ         | 1      | 8          | Comfort | 2      | 0        | 0       | 1; 5                            |
-      | MIA    | PUJ         | 2      | 9          | Comfort | 2      | 1        | 1       | 2; 3:1:outbound:2; 6:3:return; 9:2 |
-      #| MIA    | PUJ         | 1      | 8          | Comfort | 3      | 2        | 0       | 4:all:both                      |
-      #| MIA    | PUJ         | 2      | 9          | Comfort | 4      | 0        | 2       | 7:4:outbound                    |
+      | MIA    | PUJ         | 1      | 8          | Classic | 2      | 0        | 0       | 1; 5                            |
+      | MIA    | PUJ         | 2      | 9          | Classic | 2      | 1        | 1       | 2; 3:1:outbound:2; 6:3:return; 9:2 |
+      #| MIA    | PUJ         | 1      | 8          | Classic | 3      | 2        | 0       | 4:all:both                      |
+      #| MIA    | PUJ         | 2      | 9          | Classic | 4      | 0        | 2       | 7:4:outbound                    |
 
   # TODO: Implementar escenarios negativos
   # - Search with invalid dates

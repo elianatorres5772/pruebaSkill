@@ -1,4 +1,7 @@
-export type ArajetBundle = 'Basic' | 'Comfort' | 'Extra';
+// The middle fare is called Classic on the current site and Comfort on the old one
+export type ArajetBundle = 'Basic' | 'Classic' | 'Comfort' | 'Extra';
+
+const BUNDLES: readonly ArajetBundle[] = ['Basic', 'Classic', 'Comfort', 'Extra'];
 
 export interface ArajetBookingData {
     origin: string;
@@ -55,12 +58,14 @@ const wholeNumberBetween = (value: string, label: string, min: number, max: numb
     return parsed;
 };
 
-const parseBundle = (bundle: string): ArajetBundle => {
-    if (bundle === 'Basic' || bundle === 'Comfort' || bundle === 'Extra') {
-        return bundle;
+export const parseBundle = (bundle: string): ArajetBundle => {
+    const known = BUNDLES.find(name => name === bundle);
+
+    if (known) {
+        return known;
     }
 
-    throw new Error(`Unsupported Arajet bundle: ${ bundle }`);
+    throw new Error(`Unsupported Arajet bundle: ${ bundle }. Use one of ${ BUNDLES.join(', ') }`);
 };
 
 export const buildArajetBookingData = (

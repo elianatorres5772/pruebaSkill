@@ -1,13 +1,24 @@
 import { By, PageElement } from '@serenity-js/web';
 
+import type { ArajetBundle } from '../test-data/ArajetBookingData.js';
 import { xpathLiteral } from './locator.js';
 
-const fareSelectionButton = (bundle: string) =>
-    PageElement.located(
-        By.xpath(
-            `(//*[contains(@class, "fare-card--${ bundle.toLowerCase() }")]//button[normalize-space()="Seleccionar"])[1]`,
-        ),
+// Comfort was renamed Classic, so either card is the middle fare
+const fareCardClasses = (bundle: ArajetBundle): string[] =>
+    bundle === 'Classic' || bundle === 'Comfort'
+        ? ['fare-card--classic', 'fare-card--comfort']
+        : [`fare-card--${ bundle.toLowerCase() }`];
+
+// The Basic button reads "Seleccionar con restricciones" and the others "Seleccionar"
+const fareSelectionButton = (bundle: ArajetBundle) => {
+    const card = fareCardClasses(bundle)
+        .map(name => `contains(concat(" ", normalize-space(@class), " "), " ${ name } ")`)
+        .join(' or ');
+
+    return PageElement.located(
+        By.xpath(`(//*[${ card }]//button[starts-with(normalize-space(), "Seleccionar")])[1]`),
     ).describedAs(`${ bundle } fare selection button`);
+};
 
 export const ArajetFlightResultsUI = {
     // Production shows "Selecciona Vuelo De Salida" and UAT "Selecciona vuelo de salida"

@@ -11,7 +11,7 @@ import { AssignedSeats, SeatSummary } from '../../src/screenplay/questions/Araje
 import { BookedPassengers, PassengerSubmitButtonState } from '../../src/screenplay/questions/ArajetPassengers.js';
 import { AddExtras } from '../../src/screenplay/tasks/AddExtras.js';
 import { ContinueToSeatSelection } from '../../src/screenplay/tasks/ContinueToSeatSelection.js';
-import { buildArajetBookingData } from '../../src/screenplay/test-data/ArajetBookingData.js';
+import { buildArajetBookingData, parseBundle } from '../../src/screenplay/test-data/ArajetBookingData.js';
 import type { ArajetBookingData, ArajetBookingParameters } from '../../src/screenplay/test-data/ArajetBookingData.js';
 import { buildArajetExtras } from '../../src/screenplay/test-data/ArajetExtrasData.js';
 import type { ArajetExtraSelection } from '../../src/screenplay/test-data/ArajetExtrasData.js';
@@ -71,11 +71,11 @@ Then('{pronoun} should see available outbound flights', async (actor: Actor) => 
 });
 
 When('{pronoun} selects the {string} bundle for the outbound flight', async (actor: Actor, bundle: string) => {
-    await actor.attemptsTo(SelectOutboundFlight.withBundle(bundle as 'Basic' | 'Comfort' | 'Extra'));
+    await actor.attemptsTo(SelectOutboundFlight.withBundle(parseBundle(bundle)));
 });
 
 When('{pronoun} selects the {string} bundle for the return flight', async (actor: Actor, bundle: string) => {
-    await actor.attemptsTo(SelectReturnFlight.withBundle(bundle as 'Basic' | 'Comfort' | 'Extra'));
+    await actor.attemptsTo(SelectReturnFlight.withBundle(parseBundle(bundle)));
 });
 
 Then('{pronoun} should reach the passenger information step', async (actor: Actor) => {
@@ -116,7 +116,8 @@ When('{pronoun} skips the seat selection', async (actor: Actor) => {
     await actor.attemptsTo(SelectSeats.later());
 });
 
-When('{pronoun} selects random available seats', async (actor: Actor) => {
+// A seat per passenger on each flight, with the seat map reloading between flights, can take a few minutes on UAT
+When('{pronoun} selects random available seats', { timeout: 240_000 }, async (actor: Actor) => {
     await actor.attemptsTo(SelectSeats.randomly());
 });
 
@@ -161,7 +162,8 @@ When('{pronoun} continues to the review and payment step', async (actor: Actor) 
     await actor.attemptsTo(ContinueToPayment.fromExtrasStep());
 });
 
-When('{pronoun} pays with a credit card using:', async (actor: Actor, table: DataTable) => {
+// Filling in the card and the 3-D Secure check before the confirmation page take longer than the default step timeout
+When('{pronoun} pays with a credit card using:', { timeout: 240_000 }, async (actor: Actor, table: DataTable) => {
     const { number, expiry, cvv } = table.rowsHash();
 
     await actor.attemptsTo(PayForBooking.withCard(buildArajetCardPayment({ number, expiry, cvv })));
