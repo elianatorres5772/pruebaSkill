@@ -40,8 +40,10 @@ Feature: Arajet flight reservation
     When she continues to the seats and extras step
     And she selects random available seats
     Then she should have a seat on both flights for <adults> adults and <children> children
-    When she adds the extras "<extras>"
-    Then she should see every chosen extra added
+    # PENDING: UAT moved the extras to new baggage and extras pages, so the extras column is not used
+    # until those steps are rebuilt. Meanwhile both pages are passed without adding anything.
+    #When she adds the extras "<extras>"
+    #Then she should see every chosen extra added
     When she continues to the review and payment step
     And she pays with a credit card using:
       | field  | value            |

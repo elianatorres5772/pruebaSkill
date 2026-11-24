@@ -5,6 +5,29 @@ import { xpathLiteral } from './locator.js';
 const testId = (id: string): string => `[data-testid="${ id }"]`;
 
 export const ArajetPaymentUI = {
+    // The "Continue" button at the bottom of the baggage and extras pages
+    stepContinueButton: () =>
+        PageElement.located(By.xpath(
+            '(//button[contains(@class, "button--large") and contains(@class, "button--primary")]'
+            + '[normalize-space()="Continue" or normalize-space()="Continuar" or @data-testid="ibe.extras.continue"'
+            + ' or contains(translate(normalize-space(), "REVISÓNYPAG", "revisónypag"), "revisión y pago")])[last()]',
+        )).describedAs('continue button'),
+
+    // Leaving the extras page offers travel assistance, with "Yes, I want coverage" already chosen
+    assistanceModal: () =>
+        PageElement.located(By.xpath('//arajet-extras-assistance-modal//fieldset'))
+            .describedAs('travel assistance offer'),
+
+    // "No, I don't want coverage" shows a warning, and the offer's own button then moves on
+    declineAssistanceOption: () =>
+        PageElement.located(By.xpath('//arajet-extras-assistance-modal//label[starts-with(normalize-space(), "No")]'))
+            .describedAs('no travel assistance option'),
+
+    assistanceContinueButton: () =>
+        PageElement.located(By.xpath(
+            '//arajet-extras-assistance-modal//button[normalize-space()="Continue" or normalize-space()="Continuar"]',
+        )).describedAs('travel assistance continue button'),
+
     reviewAndPaymentButton: () =>
         // "Siguiente: revisión y pago" or "SIGUIENTE: REVISIÓN Y PAGO", depending on the site
         PageElement.located(By.xpath(

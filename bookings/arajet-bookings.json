@@ -193,5 +193,50 @@
     "infants": 1,
     "site": "uat-www.arajet.com",
     "bookedAt": "2026-11-23T16:08:18.181Z"
+  },
+  {
+    "confirmationNumber": "GKGOOS",
+    "lastName": "Wayne",
+    "firstName": "Bruce",
+    "email": "bruce_wayne71@example.com",
+    "origin": "MIA",
+    "destination": "PUJ",
+    "departureDate": "2026-11-25",
+    "returnDate": "2026-12-02",
+    "adults": 2,
+    "children": 0,
+    "infants": 0,
+    "site": "uat-www.arajet.com",
+    "bookedAt": "2026-11-24T19:49:23.030Z"
+  },
+  {
+    "confirmationNumber": "73VQTS",
+    "lastName": "Kent",
+    "firstName": "Clark",
+    "email": "clark.kent1@example.com",
+    "origin": "MIA",
+    "destination": "PUJ",
+    "departureDate": "2026-11-26",
+    "returnDate": "2026-12-03",
+    "adults": 2,
+    "children": 1,
+    "infants": 1,
+    "site": "uat-www.arajet.com",
+    "bookedAt": "2026-11-24T19:51:49.190Z"
+  },
+  {
+    "confirmationNumber": "LGKKM7",
+    "lastName": "Wayne",
+    "firstName": "Bruce",
+    "email": "bruce_wayne91@example.com",
+    "origin": "MIA",
+    "destination": "PUJ",
+    "departureDate": "2026-11-25",
+    "returnDate": "2026-12-02",
+    "adults": 2,
+    "children": 0,
+    "infants": 0,
+    "site": "uat-www.arajet.com",
+    "bookedAt": "2026-11-24T19:55:00.243Z"
   }
 ]

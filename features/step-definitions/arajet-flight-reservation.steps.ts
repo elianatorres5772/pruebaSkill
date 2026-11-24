@@ -7,7 +7,7 @@ import type { Actor } from '@serenity-js/core';
 import { ConfirmationMessage, ConfirmationNumber } from '../../src/screenplay/questions/ArajetConfirmation.js';
 import { BookingExtraAdded, PassengerExtraQuantities } from '../../src/screenplay/questions/ArajetExtras.js';
 import { OutboundFlightResults, PassengerInformationStep } from '../../src/screenplay/questions/ArajetFlightResults.js';
-import { AssignedSeats, SeatSummary } from '../../src/screenplay/questions/ArajetSeatMap.js';
+import { SeatsSelectedPerFlight } from '../../src/screenplay/questions/ArajetSeatMap.js';
 import { BookedPassengers, PassengerSubmitButtonState } from '../../src/screenplay/questions/ArajetPassengers.js';
 import { AddExtras } from '../../src/screenplay/tasks/AddExtras.js';
 import { ContinueToSeatSelection } from '../../src/screenplay/tasks/ContinueToSeatSelection.js';
@@ -127,10 +127,10 @@ Then(
     async (actor: Actor, adults: number, children: number) => {
         const flights = 2;
 
+        // The booking summary shows how many seats are selected on each flight
         await actor.attemptsTo(
-            Ensure.that(AssignedSeats(), property('length', equals((adults + children) * flights))),
-            Ensure.that(AssignedSeats(), containItemsWhereEachItem(matches(/^\d+[A-Z]$/))),
-            Ensure.that(SeatSummary(), not(includes('--'))),
+            Ensure.eventually(SeatsSelectedPerFlight(), property('length', equals(flights))),
+            Ensure.that(SeatsSelectedPerFlight(), containItemsWhereEachItem(equals(adults + children))),
         );
     },
 );
@@ -158,8 +158,9 @@ Then('{pronoun} should see every chosen extra added', async (actor: Actor) => {
         ),
     );
 });
+
 When('{pronoun} continues to the review and payment step', async (actor: Actor) => {
-    await actor.attemptsTo(ContinueToPayment.fromExtrasStep());
+    await actor.attemptsTo(ContinueToPayment.fromSeatsStep());
 });
 
 // Filling in the card and the 3-D Secure check before the confirmation page take longer than the default step timeout

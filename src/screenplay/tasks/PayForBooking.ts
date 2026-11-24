@@ -1,7 +1,7 @@
 import { Task } from '@serenity-js/core';
 
-import { ClickUntilUrlMatches, nextBookingStep } from '../interactions/ClickUntilUrlMatches.js';
 import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
+import { ContinueUntilVisibleWithPlaywright } from '../interactions/ContinueUntilVisibleWithPlaywright.js';
 import { FillCardPaymentWithPlaywright } from '../interactions/FillCardPaymentWithPlaywright.js';
 import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisibleWithPlaywright.js';
 import type { ArajetCardPayment } from '../test-data/ArajetPaymentData.js';
@@ -11,13 +11,19 @@ import { ArajetConfirmationUI, ArajetPaymentUI } from '../ui/ArajetPaymentUI.js'
 const confirmationTimeout = 120_000;
 
 export const ContinueToPayment = {
-    fromExtrasStep: () =>
+    // The current site has a baggage page (one tab per flight) and an extras page before the payment;
+    // the old one had a single extras page. Both are passed without adding anything.
+    fromSeatsStep: () =>
         Task.where(
             '#actor continues to the review and payment step',
-            ClickUntilUrlMatches(
-                ArajetPaymentUI.reviewAndPaymentButton(),
-                nextBookingStep,
-                'next: review and payment',
+            ContinueUntilVisibleWithPlaywright(
+                ArajetPaymentUI.stepContinueButton(),
+                ArajetPaymentUI.creditCardMethodButton(),
+                'the review and payment step',
+                [{
+                    shownBy: ArajetPaymentUI.assistanceModal(),
+                    answeredBy: [ArajetPaymentUI.declineAssistanceOption(), ArajetPaymentUI.assistanceContinueButton()],
+                }],
             ),
         ),
 };

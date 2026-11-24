@@ -56,6 +56,12 @@ export const ArajetSeatMapUI = {
             By.xpath('//arajet-seat-confirm//*[contains(@class, "seat-confirm__seat-chip")]'),
         ).describedAs('seats in the summary'),
 
+    // The booking summary of the current site shows "2 selected" next to a seat icon, once per flight
+    seatsSelectedPerFlight: () =>
+        PageElements.located(
+            By.xpath('//*[contains(@class, "payment-flight-card__ancillary")][.//i[contains(@class, "fa-seat-airline")]]//*[contains(@class, "payment-flight-card__ancillary-text")]'),
+        ).describedAs('seats selected on each flight'),
+
     // Relative to a passenger row: the seat on the flight being shown
     currentFlightSeat: 'xpath=.//arajet-seat-badge[contains(@class, "passenger-row__badge--active")]',
 };

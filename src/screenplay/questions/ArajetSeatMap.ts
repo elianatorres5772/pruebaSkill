@@ -19,3 +19,11 @@ export const AssignedSeats = () =>
 
         return seats.map(seat => seat.trim());
     });
+
+// "2 selected" -> 2, for each flight in the booking summary
+export const SeatsSelectedPerFlight = () =>
+    Question.about('the seats selected on each flight', async actor => {
+        const counts = await actor.answer(Text.ofAll(ArajetSeatMapUI.seatsSelectedPerFlight()));
+
+        return counts.map(count => Number(/\d+/.exec(count)?.[0] ?? Number.NaN));
+    });
