@@ -20,6 +20,10 @@ export const ARAJET_SECRET = process.env.ARAJET_SECRET;
 // Every confirmed booking is added to this file, outside target/ so it survives each run
 export const BOOKINGS_FILE = path.resolve(process.cwd(), process.env.BOOKINGS_FILE ?? 'bookings/arajet-bookings.json');
 
+// The bookings file starts empty on each run, so it only lists the bookings of the last one.
+// CLEAN_BOOKINGS_FILE=false keeps adding to it instead.
+export const CLEAN_BOOKINGS_FILE = process.env.CLEAN_BOOKINGS_FILE !== 'false';
+
 export const BROWSER_CHANNEL = 'chrome' as const;
 
 export const HEADLESS = process.env.HEADLESS === 'true';

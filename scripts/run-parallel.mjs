@@ -2,7 +2,7 @@
 // Usage: node scripts/run-parallel.mjs [cucumber-js options], e.g. --tags @smoke
 // PARALLEL sets the number of shards (default 2).
 import { spawn } from 'node:child_process';
-import { cpSync, existsSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import * as path from 'node:path';
 
 const shards = Number(process.env.PARALLEL ?? '2');
@@ -15,6 +15,7 @@ if (!Number.isInteger(shards) || shards < 1) {
 const cucumberArguments = process.argv.slice(2);
 const baseProfile = process.env.BROWSER_USER_DATA_DIR ?? path.resolve(process.cwd(), '.arajet-browser-profile');
 const reportDirectory = path.resolve(process.cwd(), 'target/site/serenity');
+const bookingsFile = path.resolve(process.cwd(), process.env.BOOKINGS_FILE ?? 'bookings/arajet-bookings.json');
 
 // Chrome cannot open one profile from two processes. Each shard gets its own copy of the base
 // profile so it keeps the Cloudflare clearance already stored there.
@@ -53,6 +54,7 @@ const runShard = shard =>
                     ...process.env,
                     BROWSER_USER_DATA_DIR: profileFor(shard),
                     CLEAN_REPORT_DIRECTORY: 'false',
+                    CLEAN_BOOKINGS_FILE: 'false',
                 },
             },
         );
@@ -63,6 +65,12 @@ const runShard = shard =>
     });
 
 rmSync(reportDirectory, { recursive: true, force: true });
+
+// Emptied once here: every shard adds its bookings to the same file
+if (process.env.CLEAN_BOOKINGS_FILE !== 'false') {
+    mkdirSync(path.dirname(bookingsFile), { recursive: true });
+    writeFileSync(bookingsFile, '[]\n');
+}
 
 const exitCodes = await Promise.all(
     Array.from({ length: shards }, (_, index) => runShard(index + 1)),

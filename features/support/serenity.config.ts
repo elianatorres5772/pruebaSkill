@@ -1,13 +1,15 @@
 import { AfterAll, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber';
 import { configure, Duration } from '@serenity-js/core';
 import * as playwright from 'playwright';
-import { rmSync } from 'node:fs';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import * as path from 'node:path';
 
 import {
     ARAJET_SECRET,
     ARAJET_SECRET_HEADER,
     BROWSER_CHANNEL,
+    BOOKINGS_FILE,
+    CLEAN_BOOKINGS_FILE,
     CLEAN_REPORT_DIRECTORY,
     HEADLESS,
     BROWSER_USER_DATA_DIR,
@@ -25,6 +27,11 @@ setDefaultTimeout(cucumberStepTimeout.inMilliseconds());
 BeforeAll({ timeout: 60_000 }, async () => {
     if (CLEAN_REPORT_DIRECTORY) {
         rmSync(serenityReportDirectory, { recursive: true, force: true });
+    }
+
+    if (CLEAN_BOOKINGS_FILE) {
+        mkdirSync(path.dirname(BOOKINGS_FILE), { recursive: true });
+        writeFileSync(BOOKINGS_FILE, '[]\n');
     }
 
     context = await playwright.chromium.launchPersistentContext(

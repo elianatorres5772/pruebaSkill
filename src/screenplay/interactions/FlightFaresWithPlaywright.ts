@@ -7,7 +7,8 @@ import { waitForNoLoadingOverlay } from './ClickWithPlaywright.js';
 import type { ArajetBundle } from '../test-data/ArajetBookingData.js';
 import { ArajetFlightResultsUI } from '../ui/ArajetFlightResultsUI.js';
 
-const flightsTimeout = 30_000;
+// The flight search shows a "Por favor, espere" window that can stay up for a while on UAT
+const flightsTimeout = 60_000;
 
 // The outbound fares may open on their own once the results render, and clicking the toggle then would close them
 const faresAutoOpenGrace = 2_000;
