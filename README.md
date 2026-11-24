@@ -13,8 +13,6 @@ Framework de pruebas de aceptación basado en **TypeScript**, **pnpm**, **Cucumb
 ```bash
 pnpm install
 pnpm test              # Escenarios Cucumber + reporte Serenity BDD
-pnpm test:playwright   # Regresión Playwright existente
-pnpm test:all          # Ejecuta ambos runners
 pnpm typecheck         # Comprobación TypeScript
 pnpm test:open         # Escenarios + reporte Serenity BDD y lo abre en el navegador
 pnpm test:report       # Abre el último reporte Serenity BDD
@@ -42,7 +40,6 @@ $env:HEADLESS = 'false'
 pnpm test
 ```
 
-La URL por defecto es `https://playwright.dev/`. Puede cambiarse con `BASE_URL` sin modificar el código.
 
 ## Reportes Serenity BDD
 
@@ -93,10 +90,6 @@ Un flujo nuevo agrega sus archivos en su carpeta (`features/<flujo>/` y `src/scr
 Las step definitions solo conectan Gherkin con Screenplay. Los selectores están en `ui/`, las actividades de negocio en `tasks/`, las consultas de estado en `questions/` y las capacidades del actor en `abilities/`.
 
 Para una explicación detallada del modelo y de cómo agregar rutas y casos, ver [docs/screenplay.md](docs/screenplay.md).
-
-## Configuración existente
-
-- `playwright.config.ts` conserva el proyecto `chrome`, el canal local y sus opciones de reportería, workers y trazas.
 
 ## Pruebas Arajet
 

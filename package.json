@@ -8,8 +8,6 @@
     "test:cucumber": "cucumber-js",
     "test:cucumber:parallel": "node scripts/run-parallel.mjs",
     "test:parallel": "node scripts/test-and-report.mjs test:cucumber:parallel report:bdd",
-    "test:playwright": "playwright test",
-    "test:all": "pnpm test:cucumber && pnpm test:playwright",
     "typecheck": "tsc --noEmit",
     "test:report": "node scripts/open-report.mjs target/site/serenity",
     "report:bdd:setup": "serenity-bdd update",
@@ -42,7 +40,6 @@
   "devDependencies": {
     "@cucumber/cucumber": "13.2.1",
     "@faker-js/faker": "10.6.0",
-    "@playwright/test": "^1.63.0",
     "@serenity-js/assertions": "3.48.0",
     "@serenity-js/console-reporter": "3.48.0",
     "@serenity-js/core": "3.48.0",

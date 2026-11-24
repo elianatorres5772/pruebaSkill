@@ -8,8 +8,6 @@ if (existsSync(envFile)) {
     process.loadEnvFile(envFile);
 }
 
-export const TEST_BASE_URL = process.env.BASE_URL ?? 'https://playwright.dev/';
-
 export const ARAJET_BASE_URL = process.env.ARAJET_BASE_URL ?? 'https://www.arajet.com/es-us/home';
 
 // Test environments (e.g. UAT) only let in requests that carry this header
