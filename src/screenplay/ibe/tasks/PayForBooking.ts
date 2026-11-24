@@ -1,9 +1,9 @@
 import { Task } from '@serenity-js/core';
 
-import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
-import { ContinueUntilVisibleWithPlaywright } from '../interactions/ContinueUntilVisibleWithPlaywright.js';
+import { ClickWithPlaywright } from '../../interactions/ClickWithPlaywright.js';
+import { ContinueUntilVisibleWithPlaywright } from '../../interactions/ContinueUntilVisibleWithPlaywright.js';
 import { FillCardPaymentWithPlaywright } from '../interactions/FillCardPaymentWithPlaywright.js';
-import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisibleWithPlaywright.js';
+import { WaitUntilVisibleWithPlaywright } from '../../interactions/WaitUntilVisibleWithPlaywright.js';
 import type { ArajetCardPayment } from '../test-data/ArajetPaymentData.js';
 import { ArajetConfirmationUI, ArajetPaymentUI } from '../ui/ArajetPaymentUI.js';
 

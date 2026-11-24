@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { Interaction } from '@serenity-js/core';
 import type { Answerable } from '@serenity-js/core';
 
-import { ARAJET_BASE_URL, BOOKINGS_FILE } from '../../config/environment.js';
+import { ARAJET_BASE_URL, BOOKINGS_FILE } from '../../../config/environment.js';
 import type { ArajetBookingData } from '../test-data/ArajetBookingData.js';
 import type { ArajetPrimaryPassengerData } from '../test-data/ArajetPassengerData.js';
 
@@ -17,6 +17,8 @@ export interface ArajetBookingRecord {
     origin: string;
     destination: string;
     departureDate: string;
+    // Local time at the origin, e.g. "12:55pm"
+    departureTime: string;
     returnDate: string;
     adults: number;
     children: number;
@@ -97,6 +99,7 @@ export const SaveBookingRecord = (
             origin: flight.origin,
             destination: flight.destination,
             departureDate: isoDate(flight.departureDate),
+            departureTime: flight.departureTime ?? '',
             returnDate: isoDate(flight.returnDate),
             adults: flight.adults,
             children: flight.children,

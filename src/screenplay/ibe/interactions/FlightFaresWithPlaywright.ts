@@ -3,7 +3,7 @@ import type { Answerable, AnswersQuestions } from '@serenity-js/core';
 import type { PageElement } from '@serenity-js/web';
 import type { Locator } from 'playwright';
 
-import { waitForNoLoadingOverlay } from './ClickWithPlaywright.js';
+import { waitForNoLoadingOverlay } from '../../interactions/ClickWithPlaywright.js';
 import type { ArajetBundle } from '../test-data/ArajetBookingData.js';
 import { ArajetFlightResultsUI } from '../ui/ArajetFlightResultsUI.js';
 
@@ -36,21 +36,22 @@ const waitForAnyOf = async (locators: Locator[], timeout: number): Promise<Locat
 };
 
 // The flight list can re-render while it loads and fold the fares again, so open and pick them until it works
-export const SelectFareWithPlaywright = (bundle: ArajetBundle) =>
-    Interaction.where(`#actor selects the ${ bundle } fare of the first flight`, async actor => {
+export const SelectFareWithPlaywright = (bundle: ArajetBundle, flightNumber = 1) =>
+    Interaction.where(`#actor selects the ${ bundle } fare of flight ${ flightNumber } in the list`, async actor => {
         const fare = await nativeLocatorOf(actor, ArajetFlightResultsUI.fareSelectionButton(bundle));
-        const toggle = await nativeLocatorOf(actor, ArajetFlightResultsUI.firstFlightFaresToggle());
+        const toggle = await nativeLocatorOf(actor, ArajetFlightResultsUI.flightFaresToggle(flightNumber));
         let lastError: unknown;
 
         for (let attempt = 0; attempt < 3; attempt += 1) {
             if (!await waitForAnyOf([fare, toggle], flightsTimeout)) {
-                throw new Error(`Neither the ${ bundle } fare nor the fares of the first flight were shown after ${ flightsTimeout / 1000 }s`);
+                throw new Error(`Neither the ${ bundle } fare nor the fares of flight ${ flightNumber } were shown after ${ flightsTimeout / 1000 }s`);
             }
 
             await waitForNoLoadingOverlay(fare.page());
 
             try {
-                if (!await waitForAnyOf([fare], faresAutoOpenGrace)) {
+                // Only the first flight opens its fares on its own; any other flight is opened with its toggle
+                if (flightNumber > 1 || !await waitForAnyOf([fare], faresAutoOpenGrace)) {
                     await toggle.click({ timeout: 10_000 });
                     await fare.waitFor({ state: 'visible', timeout: 10_000 });
                 }

@@ -5,7 +5,8 @@ Feature: Arajet flight reservation
 
   Children are 2 to 12 years old and infants 0 to 2 years old.
   Each infant travels with an adult, so there cannot be more infants than adults.
-  The outbound flight leaves 1 or 2 days from today, within the 72 hours before departure when check-in is open.
+  The outbound flight is the first one leaving between 4 and 24 hours from now, so the booking can be checked in
+  (check-in opens 24 hours before departure). arrivalDay is the return date, in days from today.
 
   Background:
     Given Alice is on the Arajet home page
@@ -25,7 +26,6 @@ Feature: Arajet flight reservation
       | field       | value          |
       | origin      | <origin>       |
       | destination | <destination>  |
-      | outDay      | <outDay>       |
       | arrivalDay  | <arrivalDay>   |
       | bundle      | <bundle>       |
       | adults      | <adults>       |
@@ -53,11 +53,11 @@ Feature: Arajet flight reservation
     Then she should see the booking confirmed
 
     Examples:
-      | origin | destination | outDay | arrivalDay | bundle  | adults | children | infants | extras                          |
-      | MIA    | PUJ         | 1      | 8          | Classic | 2      | 0        | 0       | 1; 5                            |
-      | MIA    | PUJ         | 2      | 9          | Classic | 2      | 1        | 1       | 2; 3:1:outbound:2; 6:3:return; 9:2 |
-      #| MIA    | PUJ         | 1      | 8          | Classic | 3      | 2        | 0       | 4:all:both                      |
-      #| MIA    | PUJ         | 2      | 9          | Classic | 4      | 0        | 2       | 7:4:outbound                    |
+      | origin | destination | arrivalDay | bundle  | adults | children | infants | extras                          |
+      | MIA    | PUJ         | 8          | Classic | 2      | 0        | 0       | 1; 5                            |
+      | MIA    | PUJ         | 9          | Classic | 2      | 1        | 1       | 2; 3:1:outbound:2; 6:3:return; 9:2 |
+      #| MIA    | PUJ         | 8          | Classic | 3      | 2        | 0       | 4:all:both                      |
+      #| MIA    | PUJ         | 9          | Classic | 4      | 0        | 2       | 7:4:outbound                    |
 
   # TODO: Implementar escenarios negativos
   # - Search with invalid dates

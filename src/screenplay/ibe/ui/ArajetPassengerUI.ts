@@ -1,7 +1,7 @@
 import { By, PageElement } from '@serenity-js/web';
 
 import type { ArajetPassengerType } from '../test-data/ArajetPassengerData.js';
-import { xpathLiteral } from './locator.js';
+import { xpathLiteral } from '../../ui/locator.js';
 
 // Forms are numbered across all passengers, e.g. "Adulto 1", "Niños 2", "Infante 3"
 const passengerFormLabels: Record<ArajetPassengerType, string> = {

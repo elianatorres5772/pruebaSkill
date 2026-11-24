@@ -18,6 +18,12 @@ export const ARAJET_SECRET_HEADER = process.env.ARAJET_SECRET_HEADER ?? 'x-secre
 export const ARAJET_SECRET = process.env.ARAJET_SECRET;
 
 // Every confirmed booking is added to this file, outside target/ so it survives each run
+// The outbound flight must leave within these hours from now, so the booking can be checked in
+// (check-in opens 24 hours before departure) while there is still time to book and check in
+export const MIN_HOURS_BEFORE_DEPARTURE = Number(process.env.MIN_HOURS_BEFORE_DEPARTURE ?? '4');
+
+export const MAX_HOURS_BEFORE_DEPARTURE = Number(process.env.MAX_HOURS_BEFORE_DEPARTURE ?? '24');
+
 export const BOOKINGS_FILE = path.resolve(process.cwd(), process.env.BOOKINGS_FILE ?? 'bookings/arajet-bookings.json');
 
 // The bookings file starts empty on each run, so it only lists the bookings of the last one.

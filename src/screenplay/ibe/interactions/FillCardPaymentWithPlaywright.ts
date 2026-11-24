@@ -1,7 +1,7 @@
 import { Interaction } from '@serenity-js/core';
 import type { Locator, Page } from 'playwright';
 
-import { chooseFromAutocomplete } from './ChooseFromAutocompleteWithPlaywright.js';
+import { chooseFromAutocomplete } from '../../interactions/ChooseFromAutocompleteWithPlaywright.js';
 import type { ArajetCardPayment } from '../test-data/ArajetPaymentData.js';
 import { ArajetPaymentUI } from '../ui/ArajetPaymentUI.js';
 

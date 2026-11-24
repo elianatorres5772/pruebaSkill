@@ -1,7 +1,7 @@
 import { By, PageElement } from '@serenity-js/web';
 
 import type { ArajetBundle } from '../test-data/ArajetBookingData.js';
-import { xpathLiteral } from './locator.js';
+import { xpathLiteral } from '../../ui/locator.js';
 
 // Comfort was renamed Classic, so either card is the middle fare
 const fareCardClasses = (bundle: ArajetBundle): string[] =>
@@ -29,14 +29,17 @@ export const ArajetFlightResultsUI = {
 
     fareSelectionButton,
 
-    // Shows the fares of the first flight: "Ver tarifas" on the current site, an accordion header on the old one
-    firstFlightFaresToggle: () =>
+    // Shows the fares of a flight in the list: "Ver tarifas" on the current site, an accordion header on the old one
+    flightFaresToggle: (flightNumber: number) =>
         PageElement.located(
             By.xpath(
-                '(//button[contains(@data-testid, ".flight-1.see-fares")]'
-                + ' | //arajet-available-flights[not(.//button[contains(@data-testid, ".see-fares")])]//a[contains(@class, "p-accordion-header-link")])[1]',
+                `(//button[contains(@data-testid, ".flight-${ flightNumber }.see-fares")]`
+                + ` | (//arajet-available-flights[not(.//button[contains(@data-testid, ".see-fares")])]//a[contains(@class, "p-accordion-header-link")])[${ flightNumber }])[1]`,
             ),
-        ).describedAs('first flight fares toggle'),
+        ).describedAs(`flight ${ flightNumber } fares toggle`),
+
+    // The flight cards of the current site, each one starting with its departure time ("12:55pm Miami (MIA) ...")
+    flightCards: 'p-card[data-testid^="ibe.flight-selection.flight-"]',
 
     // Only shown on the current site, between the flights and the passengers steps
     flightSummaryContinueButton: () =>

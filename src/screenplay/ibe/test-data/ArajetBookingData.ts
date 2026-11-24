@@ -6,7 +6,10 @@ const BUNDLES: readonly ArajetBundle[] = ['Basic', 'Classic', 'Comfort', 'Extra'
 export interface ArajetBookingData {
     origin: string;
     destination: string;
+    // Chosen on the search: the first date with a flight leaving within the check-in window
     departureDate: string;
+    // e.g. "12:55pm", in the local time of the origin, once the outbound flight is chosen
+    departureTime?: string;
     returnDate: string;
     bundle: ArajetBundle;
     adults: number;
@@ -17,7 +20,6 @@ export interface ArajetBookingData {
 export interface ArajetBookingParameters {
     origin: string;
     destination: string;
-    outDay: string;
     arrivalDay: string;
     bundle: string;
     adults?: string;
@@ -27,10 +29,8 @@ export interface ArajetBookingParameters {
 
 const MAX_ADULTS = 20;
 
-// The bookings must be ready for check-in, which opens 72 hours before departure. A flight up to
-// two days from today always leaves in less than 72 hours; today's flights may have already left.
-const MIN_DAYS_TO_DEPARTURE = 1;
-const MAX_DAYS_TO_DEPARTURE = 2;
+// The outbound flight leaves today or tomorrow, so the return is at least two days from today
+const MIN_RETURN_DAY = 2;
 
 const toArajetDate = (date: Date): string => {
     const year = date.getFullYear();
@@ -71,11 +71,10 @@ export const parseBundle = (bundle: string): ArajetBundle => {
 export const buildArajetBookingData = (
     parameters: ArajetBookingParameters,
 ): ArajetBookingData => {
-    const outDay = Number(parameters.outDay);
     const arrivalDay = Number(parameters.arrivalDay);
 
-    if (!Number.isInteger(outDay) || !Number.isInteger(arrivalDay)) {
-        throw new Error('Travel days must be whole numbers');
+    if (!Number.isInteger(arrivalDay) || arrivalDay < MIN_RETURN_DAY) {
+        throw new Error(`The return day must be a whole number of days from today, at least ${ MIN_RETURN_DAY }`);
     }
 
     const adults = wholeNumberBetween(parameters.adults ?? '1', 'Adults', 1, MAX_ADULTS);
@@ -83,20 +82,11 @@ export const buildArajetBookingData = (
     // Each infant must travel with an adult
     const infants = wholeNumberBetween(parameters.infants ?? '0', 'Infants', 0, adults);
 
-    if (outDay < MIN_DAYS_TO_DEPARTURE || outDay > MAX_DAYS_TO_DEPARTURE) {
-        throw new Error(
-            `The outbound day must be ${ MIN_DAYS_TO_DEPARTURE } to ${ MAX_DAYS_TO_DEPARTURE } days from today, so the booking can be checked in (check-in opens 72 hours before departure)`,
-        );
-    }
-
-    if (arrivalDay <= outDay) {
-        throw new Error('The return day must be after the outbound day');
-    }
-
     return {
         origin: parameters.origin,
         destination: parameters.destination,
-        departureDate: toArajetDate(addDaysFromToday(outDay)),
+        // Replaced on the search by the date of a flight within the check-in window
+        departureDate: toArajetDate(addDaysFromToday(0)),
         returnDate: toArajetDate(addDaysFromToday(arrivalDay)),
         bundle: parseBundle(parameters.bundle),
         adults,

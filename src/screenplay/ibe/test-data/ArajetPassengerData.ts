@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-import { FAKER_SEED } from '../../config/environment.js';
+import { FAKER_SEED } from '../../../config/environment.js';
 import passengerNames from './passenger-names.json' with { type: 'json' };
 
 export type ArajetPassengerType = 'adult' | 'child' | 'infant';

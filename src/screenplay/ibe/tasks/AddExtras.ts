@@ -1,7 +1,7 @@
 import { Task } from '@serenity-js/core';
 
 import { AddPassengerExtraWithPlaywright, SelectBookingExtraWithPlaywright } from '../interactions/AddExtrasWithPlaywright.js';
-import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisibleWithPlaywright.js';
+import { WaitUntilVisibleWithPlaywright } from '../../interactions/WaitUntilVisibleWithPlaywright.js';
 import type { ArajetExtraSelection } from '../test-data/ArajetExtrasData.js';
 import { ArajetExtrasUI } from '../ui/ArajetExtrasUI.js';
 

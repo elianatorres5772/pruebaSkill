@@ -4,31 +4,32 @@ import { containItemsWhereEachItem, Ensure, equals, includes, isTrue, matches, n
 import { Log, notes } from '@serenity-js/core';
 import type { Actor } from '@serenity-js/core';
 
-import { ConfirmationMessage, ConfirmationNumber } from '../../src/screenplay/questions/ArajetConfirmation.js';
-import { BookingExtraAdded, PassengerExtraQuantities } from '../../src/screenplay/questions/ArajetExtras.js';
-import { OutboundFlightResults, PassengerInformationStep } from '../../src/screenplay/questions/ArajetFlightResults.js';
-import { SeatsSelectedPerFlight } from '../../src/screenplay/questions/ArajetSeatMap.js';
-import { BookedPassengers, PassengerSubmitButtonState } from '../../src/screenplay/questions/ArajetPassengers.js';
-import { AddExtras } from '../../src/screenplay/tasks/AddExtras.js';
-import { ContinueToSeatSelection } from '../../src/screenplay/tasks/ContinueToSeatSelection.js';
-import { buildArajetBookingData, parseBundle } from '../../src/screenplay/test-data/ArajetBookingData.js';
-import type { ArajetBookingData, ArajetBookingParameters } from '../../src/screenplay/test-data/ArajetBookingData.js';
-import { buildArajetExtras } from '../../src/screenplay/test-data/ArajetExtrasData.js';
-import type { ArajetExtraSelection } from '../../src/screenplay/test-data/ArajetExtrasData.js';
-import { syntheticPassengers } from '../../src/screenplay/test-data/ArajetPassengerData.js';
-import type { ArajetPrimaryPassengerData } from '../../src/screenplay/test-data/ArajetPassengerData.js';
-import { SaveBookingRecord } from '../../src/screenplay/interactions/SaveBookingRecord.js';
-import { EnterPassengerInformation } from '../../src/screenplay/tasks/EnterPassengerInformation.js';
-import { OpenArajet } from '../../src/screenplay/tasks/OpenArajet.js';
-import { ContinueToPayment, PayForBooking } from '../../src/screenplay/tasks/PayForBooking.js';
-import { buildArajetCardPayment } from '../../src/screenplay/test-data/ArajetPaymentData.js';
-import { SearchForFlight } from '../../src/screenplay/tasks/SearchForFlight.js';
-import { SelectOutboundFlight, SelectReturnFlight } from '../../src/screenplay/tasks/SelectFlight.js';
-import { SelectSeats } from '../../src/screenplay/tasks/SelectSeats.js';
+import { ConfirmationMessage, ConfirmationNumber } from '../../../src/screenplay/ibe/questions/ArajetConfirmation.js';
+import { BookingExtraAdded, PassengerExtraQuantities } from '../../../src/screenplay/ibe/questions/ArajetExtras.js';
+import { OutboundFlightResults, PassengerInformationStep } from '../../../src/screenplay/ibe/questions/ArajetFlightResults.js';
+import { SeatsSelectedPerFlight } from '../../../src/screenplay/ibe/questions/ArajetSeatMap.js';
+import { BookedPassengers, PassengerSubmitButtonState } from '../../../src/screenplay/ibe/questions/ArajetPassengers.js';
+import { AddExtras } from '../../../src/screenplay/ibe/tasks/AddExtras.js';
+import { ContinueToSeatSelection } from '../../../src/screenplay/ibe/tasks/ContinueToSeatSelection.js';
+import { buildArajetBookingData, parseBundle } from '../../../src/screenplay/ibe/test-data/ArajetBookingData.js';
+import type { ArajetBookingData, ArajetBookingParameters } from '../../../src/screenplay/ibe/test-data/ArajetBookingData.js';
+import { buildArajetExtras } from '../../../src/screenplay/ibe/test-data/ArajetExtrasData.js';
+import type { ArajetExtraSelection } from '../../../src/screenplay/ibe/test-data/ArajetExtrasData.js';
+import { syntheticPassengers } from '../../../src/screenplay/ibe/test-data/ArajetPassengerData.js';
+import type { ArajetPrimaryPassengerData } from '../../../src/screenplay/ibe/test-data/ArajetPassengerData.js';
+import { SaveBookingRecord } from '../../../src/screenplay/ibe/interactions/SaveBookingRecord.js';
+import { EnterPassengerInformation } from '../../../src/screenplay/ibe/tasks/EnterPassengerInformation.js';
+import { OpenArajet } from '../../../src/screenplay/tasks/OpenArajet.js';
+import { ContinueToPayment, PayForBooking } from '../../../src/screenplay/ibe/tasks/PayForBooking.js';
+import { buildArajetCardPayment } from '../../../src/screenplay/ibe/test-data/ArajetPaymentData.js';
+import { SearchForFlightWithinCheckInWithPlaywright } from '../../../src/screenplay/ibe/interactions/SearchForFlightWithinCheckInWithPlaywright.js';
+import { SelectOutboundFlight, SelectReturnFlight } from '../../../src/screenplay/ibe/tasks/SelectFlight.js';
+import { SelectSeats } from '../../../src/screenplay/ibe/tasks/SelectSeats.js';
 
 interface BookingNotes {
     extras: ArajetExtraSelection[];
     booking: ArajetBookingData;
+    outboundFlightNumber: number;
     primaryPassenger: ArajetPrimaryPassengerData;
 }
 
@@ -42,7 +43,6 @@ const bookingParametersFrom = (table: DataTable): ArajetBookingParameters => {
     return {
         origin: values.origin,
         destination: values.destination,
-        outDay: values.outDay,
         arrivalDay: values.arrivalDay,
         bundle: values.bundle,
         adults: values.adults,
@@ -55,13 +55,12 @@ Given('{actor} is on the Arajet home page', async (actor: Actor) => {
     await actor.attemptsTo(OpenArajet.homePage());
 });
 
-When('{actor} searches for a round trip using:', async (actor: Actor, table: DataTable) => {
+// It may search two dates (today and tomorrow) before finding a flight within the check-in window
+When('{actor} searches for a round trip using:', { timeout: 300_000 }, async (actor: Actor, table: DataTable) => {
     const booking = buildArajetBookingData(bookingParametersFrom(table));
 
-    await actor.attemptsTo(
-        notes<BookingNotes>().set('booking', booking),
-        SearchForFlight.onArajet(booking),
-    );
+    // Notes the booking with the date and time of the outbound flight it finds
+    await actor.attemptsTo(SearchForFlightWithinCheckInWithPlaywright(booking));
 });
 
 Then('{pronoun} should see available outbound flights', async (actor: Actor) => {
@@ -71,7 +70,9 @@ Then('{pronoun} should see available outbound flights', async (actor: Actor) => 
 });
 
 When('{pronoun} selects the {string} bundle for the outbound flight', async (actor: Actor, bundle: string) => {
-    await actor.attemptsTo(SelectOutboundFlight.withBundle(parseBundle(bundle)));
+    const flightNumber = await actor.answer(notes<BookingNotes>().get('outboundFlightNumber'));
+
+    await actor.attemptsTo(SelectOutboundFlight.withBundle(parseBundle(bundle), flightNumber));
 });
 
 When('{pronoun} selects the {string} bundle for the return flight', async (actor: Actor, bundle: string) => {

@@ -61,22 +61,34 @@ pnpm report:bdd:setup  # Descarga/actualiza el CLI de Serenity BDD (se hace solo
 
 ## Estructura Screenplay
 
+Cada flujo de Arajet tiene su carpeta (`ibe/` para la reserva; `mmb/` para Manage My Booking). Lo que sirve a todos los flujos queda fuera de ellas.
+
 ```text
 features/
-├── playwright-documentation.feature
-├── step-definitions/
-│   ├── parameter.steps.ts
-│   └── playwright-documentation.steps.ts
+├── ibe/                              # Reserva (Internet Booking Engine)
+│   ├── arajet-flight-reservation.feature
+│   └── step-definitions/
+│       └── arajet-flight-reservation.steps.ts
 └── support/
-    └── serenity.config.ts
+    ├── parameter-types.ts            # Común: {actor} y {pronoun}
+    └── serenity.config.ts            # Común: navegador, Serenity, header secreto
 src/
+├── config/environment.ts             # Común: variables de entorno y .env
 └── screenplay/
-    ├── abilities/
-    ├── interactions/
-    ├── questions/
-    ├── tasks/
-    └── ui/
+    ├── abilities/                    # Común
+    ├── interactions/                 # Común: clics, esperas, autocompletado, "continuar hasta"
+    ├── tasks/OpenArajet.ts           # Común
+    ├── ui/locator.ts                 # Común
+    └── ibe/
+        ├── interactions/
+        ├── questions/
+        ├── tasks/
+        ├── test-data/
+        └── ui/
+bookings/arajet-bookings.json         # Reservas creadas por IBE (número de confirmación y apellido)
 ```
+
+Un flujo nuevo agrega sus archivos en su carpeta (`features/<flujo>/` y `src/screenplay/<flujo>/`) e importa lo común. Cucumber encuentra solo los `.feature` y `.steps.ts` de cualquier subcarpeta de `features/`.
 
 Las step definitions solo conectan Gherkin con Screenplay. Los selectores están en `ui/`, las actividades de negocio en `tasks/`, las consultas de estado en `questions/` y las capacidades del actor en `abilities/`.
 

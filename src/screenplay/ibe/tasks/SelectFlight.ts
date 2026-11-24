@@ -8,10 +8,11 @@ import {
 import type { ArajetBundle } from '../test-data/ArajetBookingData.js';
 
 export const SelectOutboundFlight = {
-    withBundle: (bundle: ArajetBundle) =>
+    // flightNumber: position of the flight in the outbound list, starting at 1
+    withBundle: (bundle: ArajetBundle, flightNumber = 1) =>
         Task.where(
             `#actor selects the ${ bundle } bundle for the outbound flight`,
-            SelectFareWithPlaywright(bundle),
+            SelectFareWithPlaywright(bundle, flightNumber),
             WaitForReturnFlightsWithPlaywright(),
         ),
 };

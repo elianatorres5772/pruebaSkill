@@ -1,10 +1,10 @@
 import { Task } from '@serenity-js/core';
 import { Click } from '@serenity-js/web';
 
-import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
+import { ClickWithPlaywright } from '../../interactions/ClickWithPlaywright.js';
 import { OpenDatePickerWithPlaywright } from '../interactions/OpenDatePickerWithPlaywright.js';
 import { SelectPassengersWithPlaywright } from '../interactions/SelectPassengersWithPlaywright.js';
-import { SelectOptionWithPlaywright } from '../interactions/SelectOptionWithPlaywright.js';
+import { SelectOptionWithPlaywright } from '../../interactions/SelectOptionWithPlaywright.js';
 import type { ArajetBookingData } from '../test-data/ArajetBookingData.js';
 import { ArajetFlightSearchUI } from '../ui/ArajetFlightSearchUI.js';
 

@@ -1,7 +1,7 @@
 import { By, PageElement, PageElements } from '@serenity-js/web';
 
 import type { ArajetFlight } from '../test-data/ArajetExtrasData.js';
-import { xpathLiteral } from './locator.js';
+import { xpathLiteral } from '../../ui/locator.js';
 
 // Arajet mixes straight and curly apostrophes ("Pa’ Picar Combo", "Pa' Brindar Combo"),
 // so names are compared without them

@@ -1,9 +1,9 @@
 import { Task } from '@serenity-js/core';
 import { Click, Enter } from '@serenity-js/web';
 
-import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
-import { ChooseFromAutocompleteWithPlaywright } from '../interactions/ChooseFromAutocompleteWithPlaywright.js';
-import { WaitUntilVisibleWithPlaywright } from '../interactions/WaitUntilVisibleWithPlaywright.js';
+import { ClickWithPlaywright } from '../../interactions/ClickWithPlaywright.js';
+import { ChooseFromAutocompleteWithPlaywright } from '../../interactions/ChooseFromAutocompleteWithPlaywright.js';
+import { WaitUntilVisibleWithPlaywright } from '../../interactions/WaitUntilVisibleWithPlaywright.js';
 import type {
     ArajetPassengerData,
     ArajetPassengerType,

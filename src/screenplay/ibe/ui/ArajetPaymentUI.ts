@@ -1,6 +1,6 @@
 import { By, PageElement } from '@serenity-js/web';
 
-import { xpathLiteral } from './locator.js';
+import { xpathLiteral } from '../../ui/locator.js';
 
 const testId = (id: string): string => `[data-testid="${ id }"]`;
 

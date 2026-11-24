@@ -1,7 +1,7 @@
 import { By, PageElement, PageElements } from '@serenity-js/web';
 
 import type { ArajetPassengerType } from '../test-data/ArajetPassengerData.js';
-import { xpathLiteral } from './locator.js';
+import { xpathLiteral } from '../../ui/locator.js';
 
 const passengerRowLabels: Record<ArajetPassengerType, string> = {
     adult: 'Adultos',

@@ -1,6 +1,6 @@
 import { Task } from '@serenity-js/core';
 
-import { ClickWithPlaywright } from '../interactions/ClickWithPlaywright.js';
+import { ClickWithPlaywright } from '../../interactions/ClickWithPlaywright.js';
 import { SelectRandomSeatsWithPlaywright } from '../interactions/SelectRandomSeatsWithPlaywright.js';
 import { ArajetSeatMapUI } from '../ui/ArajetSeatMapUI.js';
 
