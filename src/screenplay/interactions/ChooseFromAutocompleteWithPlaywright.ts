@@ -5,6 +5,20 @@ import type { Locator } from 'playwright';
 
 const optionTimeout = 10_000;
 
+// Some fields come filled in (e.g. the phone country code, "+1", depending on where the browser is), and
+// fill('') does not always empty them, so the typed value would be added to what is there ("+1 +1").
+// Select everything and delete it with the keyboard, as a person would, until the field is empty.
+const clear = async (input: Locator): Promise<void> => {
+    for (let attempt = 0; attempt < 3 && (await input.inputValue()) !== ''; attempt += 1) {
+        await input.fill('').catch(() => undefined);
+
+        if ((await input.inputValue()) !== '') {
+            await input.press('ControlOrMeta+a');
+            await input.press('Backspace');
+        }
+    }
+};
+
 // Arajet's autocompletes only filter their options on key presses, so a pasted value (what
 // Enter.theValue does) leaves the list unfiltered. Typing the whole name may also pick the
 // option right away and close the list, so the choice is done once the field shows the value.
@@ -19,7 +33,7 @@ export const chooseFromAutocomplete = async (input: Locator, option: Locator, va
     }
 
     await input.focus({ timeout: optionTimeout });
-    await input.fill('');
+    await clear(input);
     await input.pressSequentially(value, { delay: 80 });
 
     const deadline = Date.now() + optionTimeout;
