@@ -55,7 +55,7 @@ Given('{actor} is on the Arajet home page', async (actor: Actor) => {
     await actor.attemptsTo(OpenArajet.homePage());
 });
 
-// It may search two dates (today and tomorrow) before finding a flight within the check-in window
+// Searches tomorrow, and later days only when a date has no flights
 When('{actor} searches for a round trip using:', { timeout: 300_000 }, async (actor: Actor, table: DataTable) => {
     const booking = buildArajetBookingData(bookingParametersFrom(table));
 
@@ -160,7 +160,8 @@ Then('{pronoun} should see every chosen extra added', async (actor: Actor) => {
     );
 });
 
-When('{pronoun} continues to the review and payment step', async (actor: Actor) => {
+// Goes through baggage, extras and the travel assistance window, which can be slow on UAT
+When('{pronoun} continues to the review and payment step', { timeout: 240_000 }, async (actor: Actor) => {
     await actor.attemptsTo(ContinueToPayment.fromSeatsStep());
 });
 

@@ -62,20 +62,14 @@ export const arajetDateIn = (instant: Date, timeZone: string): string => {
     return `${ year }-${ month }-${ day }`;
 };
 
-// The dates, in the origin's time zone, on which a flight could leave within the window
-export const candidateDates = (window: DepartureWindow): string[] => {
-    const dates: string[] = [];
+// How many days after tomorrow are also searched when a date has no flights at all
+const EXTRA_SEARCH_DAYS = 2;
 
-    for (let instant = window.earliest.getTime(); instant <= window.latest.getTime() + 24 * HOUR; instant += 24 * HOUR) {
-        const date = arajetDateIn(new Date(Math.min(instant, window.latest.getTime())), window.timeZone);
-
-        if (!dates.includes(date)) {
-            dates.push(date);
-        }
-    }
-
-    return dates;
-};
+// The outbound flight always leaves from tomorrow on, in the origin's time zone, never today.
+// Tomorrow comes first; the following days are only searched when a date has no flights.
+export const searchDates = (window: DepartureWindow, now = new Date()): string[] =>
+    Array.from({ length: 1 + EXTRA_SEARCH_DAYS }, (_, day) =>
+        arajetDateIn(new Date(now.getTime() + (day + 1) * 24 * HOUR), window.timeZone));
 
 // "2026-11-25" + "12:55pm" in America/New_York -> the instant it stands for
 export const departureInstant = (date: string, time: string, timeZone: string): Date => {

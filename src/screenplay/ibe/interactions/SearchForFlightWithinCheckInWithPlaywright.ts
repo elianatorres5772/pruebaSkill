@@ -1,16 +1,17 @@
-import { Interaction, notes } from '@serenity-js/core';
-import type { AnswersQuestions, PerformsActivities } from '@serenity-js/core';
+import { Interaction, Log, notes } from '@serenity-js/core';
+import type { Answerable, AnswersQuestions, PerformsActivities } from '@serenity-js/core';
+import type { PageElement } from '@serenity-js/web';
 import type { Locator, Page } from 'playwright';
 
 import { OpenArajet } from '../../tasks/OpenArajet.js';
 import { SearchForFlight } from '../tasks/SearchForFlight.js';
 import type { ArajetBookingData } from '../test-data/ArajetBookingData.js';
 import {
-    candidateDates,
     departureInstant,
     departureWindow,
     describeWindow,
     isWithin,
+    searchDates,
 } from '../test-data/ArajetDeparture.js';
 import { ArajetFlightResultsUI } from '../ui/ArajetFlightResultsUI.js';
 
@@ -23,49 +24,82 @@ export interface OutboundFlightNotes {
 const resultsTimeout = 60_000;
 
 interface FlightsShown {
+    // Whether the list shows any flight at all
+    any: boolean;
     // The departure time of each flight in the list, '' when it could not be read
     times: string[];
-    // What the flights or the page said, to tell why no time could be read
+    // What the flights or the page said, for the report
     seen: string;
 }
 
 const firstWords = (text: string, length = 120) => text.replace(/\s+/g, ' ').trim().slice(0, length);
 
-const flightsShownOn = async (page: Page): Promise<FlightsShown> => {
+const nativeLocatorOf = async (actor: AnswersQuestions, element: Answerable<PageElement>): Promise<Locator> =>
+    (await actor.answer(element)).locator.nativeElement();
+
+const firstVisible = async (locators: Locator[], timeout: number): Promise<Locator | undefined> => {
+    const deadline = Date.now() + timeout;
+
+    while (Date.now() < deadline) {
+        for (const locator of locators) {
+            if (await locator.isVisible().catch(() => false)) {
+                return locator;
+            }
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 250));
+    }
+
+    return undefined;
+};
+
+// The flight cards carry the departure times. Some browsers get a list without those cards; its first flight can
+// still be told by its fares, so the flight is then picked without knowing its time.
+const flightsShownOn = async (actor: AnswersQuestions, page: Page, booking: ArajetBookingData): Promise<FlightsShown> => {
     const cards = page.locator(ArajetFlightResultsUI.flightCards);
+    const firstFlight = [
+        await nativeLocatorOf(actor, ArajetFlightResultsUI.flightFaresToggle(1)),
+        await nativeLocatorOf(actor, ArajetFlightResultsUI.fareSelectionButton(booking.bundle)),
+    ];
+    const shown = await firstVisible([cards.first(), ...firstFlight], resultsTimeout);
 
-    if (!await cards.first().waitFor({ state: 'visible', timeout: resultsTimeout }).then(() => true, () => false)) {
-        const main = await page.locator('main').first().innerText({ timeout: 5_000 }).catch(() => '');
+    if (!shown) {
+        const body = await page.locator('body').innerText({ timeout: 5_000 }).catch(() => '');
 
-        return { times: [], seen: `no flight cards after ${ resultsTimeout / 1000 }s, the page said: "${ firstWords(main) }"` };
+        return { any: false, times: [], seen: `no flights after ${ resultsTimeout / 1000 }s, the page said: "${ firstWords(body, 200) }"` };
     }
 
     const texts = await cards.allInnerTexts();
     const times = texts.map(text => /\d{1,2}:\d{2}(?:\s*[ap]\.?\s*m\.?)?/i.exec(text)?.[0] ?? '');
 
-    return { times, seen: texts.map(text => `"${ firstWords(text, 60) }"`).join(', ') };
+    return {
+        any: true,
+        times,
+        seen: times.filter(Boolean).join(', ') || 'flights shown, but their departure times could not be read',
+    };
 };
 
 const resultsPage = async (actor: AnswersQuestions): Promise<Page> => {
-    const heading = await (await actor.answer(ArajetFlightResultsUI.outboundHeading())).locator.nativeElement() as Locator;
+    const heading = await nativeLocatorOf(actor, ArajetFlightResultsUI.outboundHeading());
     await heading.waitFor({ state: 'visible', timeout: resultsTimeout });
 
     return heading.page();
 };
 
-// Check-in opens 24 hours before departure, so the outbound flight must leave within that time (and late
-// enough to still book and check in). The flights of each possible date are searched in turn, and the first
-// one leaving within that window is noted for the outbound flight selection.
+// The outbound flight always leaves from tomorrow on, never today. Check-in opens 24 hours before departure,
+// so a flight of tomorrow leaving within that time (and late enough to still book and check in) is preferred.
+// When none does, the flight leaving soonest is taken anyway, and the report says it cannot be checked in yet.
+// Later dates are only searched when a date shows no flights at all.
 export const SearchForFlightWithinCheckInWithPlaywright = (booking: ArajetBookingData) =>
     Interaction.where(
-        `#actor searches for a round trip from ${ booking.origin } to ${ booking.destination } leaving within the check-in window`,
+        `#actor searches for a round trip from ${ booking.origin } to ${ booking.destination } leaving from tomorrow on`,
         async actorAnswering => {
             // The actor given to an interaction can also perform activities, though its type does not say so
             const actor = actorAnswering as typeof actorAnswering & PerformsActivities;
             const window = departureWindow(booking.origin);
             const found: string[] = [];
 
-            for (const [index, date] of candidateDates(window).entries()) {
+            for (const [index, date] of searchDates(window).entries()) {
                 const search = { ...booking, departureDate: date };
 
                 try {
@@ -75,19 +109,35 @@ export const SearchForFlightWithinCheckInWithPlaywright = (booking: ArajetBookin
 
                     await actor.attemptsTo(SearchForFlight.onArajet(search));
 
-                    const { times, seen } = await flightsShownOn(await resultsPage(actor));
-                    const flight = times.findIndex(time => time && isWithin(departureInstant(date, time, window.timeZone), window));
+                    const flights = await flightsShownOn(actor, await resultsPage(actor), booking);
+                    found.push(`${ date }: ${ flights.seen }`);
 
-                    found.push(`${ date }: ${ times.filter(Boolean).join(', ') || seen }`);
-
-                    if (flight >= 0) {
-                        await actor.attemptsTo(
-                            notes<OutboundFlightNotes>().set('booking', { ...search, departureTime: times[flight] }),
-                            notes<OutboundFlightNotes>().set('outboundFlightNumber', flight + 1),
-                        );
-
-                        return;
+                    if (!flights.any) {
+                        continue;
                     }
+
+                    const departures = flights.times.map(time => time ? departureInstant(date, time, window.timeZone) : undefined);
+                    const withinCheckIn = departures.findIndex(instant => instant && isWithin(instant, window));
+                    const soonest = departures.reduce<number>(
+                        (best, instant, position) => instant && (best < 0 || instant < departures[best]!) ? position : best,
+                        -1,
+                    );
+                    // Without any time to compare, the first flight of the list is the soonest one
+                    const flight = withinCheckIn >= 0 ? withinCheckIn : Math.max(soonest, 0);
+
+                    if (withinCheckIn < 0) {
+                        await actor.attemptsTo(Log.the(
+                            `No flight on ${ date } leaves ${ describeWindow(window) }, so flight ${ flight + 1 } `
+                            + `(${ flights.times[flight] || 'time unknown' }) is booked, and it cannot be checked in yet`,
+                        ));
+                    }
+
+                    await actor.attemptsTo(
+                        notes<OutboundFlightNotes>().set('booking', { ...search, departureTime: flights.times[flight] || undefined }),
+                        notes<OutboundFlightNotes>().set('outboundFlightNumber', flight + 1),
+                    );
+
+                    return;
                 }
                 catch (error) {
                     found.push(`${ date }: could not search (${ String(error).split('\n')[0] })`);
@@ -95,8 +145,8 @@ export const SearchForFlightWithinCheckInWithPlaywright = (booking: ArajetBookin
             }
 
             throw new Error(
-                `No flight from ${ booking.origin } to ${ booking.destination } leaves ${ describeWindow(window) }, `
-                + `so the booking could not be checked in. Flights found: ${ found.join('; ') }`,
+                `No flight from ${ booking.origin } to ${ booking.destination } was found from tomorrow on. `
+                + `Searched: ${ found.join('; ') }`,
             );
         },
     );

@@ -6,7 +6,7 @@ const BUNDLES: readonly ArajetBundle[] = ['Basic', 'Classic', 'Comfort', 'Extra'
 export interface ArajetBookingData {
     origin: string;
     destination: string;
-    // Chosen on the search: the first date with a flight leaving within the check-in window
+    // Chosen on the search: tomorrow, or a later day when tomorrow has no flights
     departureDate: string;
     // e.g. "12:55pm", in the local time of the origin, once the outbound flight is chosen
     departureTime?: string;
@@ -85,7 +85,7 @@ export const buildArajetBookingData = (
     return {
         origin: parameters.origin,
         destination: parameters.destination,
-        // Replaced on the search by the date of a flight within the check-in window
+        // Replaced on the search by the date of the chosen flight, from tomorrow on
         departureDate: toArajetDate(addDaysFromToday(0)),
         returnDate: toArajetDate(addDaysFromToday(arrivalDay)),
         bundle: parseBundle(parameters.bundle),

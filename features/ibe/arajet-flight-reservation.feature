@@ -5,8 +5,8 @@ Feature: Arajet flight reservation
 
   Children are 2 to 12 years old and infants 0 to 2 years old.
   Each infant travels with an adult, so there cannot be more infants than adults.
-  The outbound flight is the first one leaving between 4 and 24 hours from now, so the booking can be checked in
-  (check-in opens 24 hours before departure). arrivalDay is the return date, in days from today.
+  The outbound flight leaves tomorrow (never today): one leaving between 4 and 24 hours from now if there is one,
+  so the booking can be checked in, otherwise the one leaving soonest. arrivalDay is the return date, in days from today.
 
   Background:
     Given Alice is on the Arajet home page
