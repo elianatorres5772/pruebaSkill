@@ -80,13 +80,16 @@ export const candidateDates = (window: DepartureWindow): string[] => {
 // "2026-11-25" + "12:55pm" in America/New_York -> the instant it stands for
 export const departureInstant = (date: string, time: string, timeZone: string): Date => {
     const [year, month, day] = date.split('-').map(Number);
-    const match = /^(\d{1,2}):(\d{2})\s*([ap])\.?\s*m\.?$/i.exec(time.trim());
+    // "4:18pm", "4:18 p. m." or, in a 24-hour browser, "16:18"
+    const match = /^(\d{1,2}):(\d{2})(?:\s*([ap])\.?\s*m\.?)?$/i.exec(time.trim());
 
     if (!match) {
         throw new Error(`Could not read the departure time "${ time }"`);
     }
 
-    const hour = (Number(match[1]) % 12) + (match[3].toLowerCase() === 'p' ? 12 : 0);
+    const hour = match[3]
+        ? (Number(match[1]) % 12) + (match[3].toLowerCase() === 'p' ? 12 : 0)
+        : Number(match[1]);
     const asIfUtc = Date.UTC(year, month - 1, day, hour, Number(match[2]));
     // The offset of the time zone at that moment, e.g. -5 hours for New York in winter
     const local = partsIn(new Date(asIfUtc), timeZone);

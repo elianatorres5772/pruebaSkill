@@ -22,15 +22,28 @@ export interface OutboundFlightNotes {
 
 const resultsTimeout = 60_000;
 
-const departureTimesOn = async (page: Page): Promise<string[]> => {
+interface FlightsShown {
+    // The departure time of each flight in the list, '' when it could not be read
+    times: string[];
+    // What the flights or the page said, to tell why no time could be read
+    seen: string;
+}
+
+const firstWords = (text: string, length = 120) => text.replace(/\s+/g, ' ').trim().slice(0, length);
+
+const flightsShownOn = async (page: Page): Promise<FlightsShown> => {
     const cards = page.locator(ArajetFlightResultsUI.flightCards);
 
     if (!await cards.first().waitFor({ state: 'visible', timeout: resultsTimeout }).then(() => true, () => false)) {
-        return [];
+        const main = await page.locator('main').first().innerText({ timeout: 5_000 }).catch(() => '');
+
+        return { times: [], seen: `no flight cards after ${ resultsTimeout / 1000 }s, the page said: "${ firstWords(main) }"` };
     }
 
-    return (await cards.allInnerTexts())
-        .map(text => /\d{1,2}:\d{2}\s*[ap]\.?\s*m\.?/i.exec(text)?.[0] ?? '');
+    const texts = await cards.allInnerTexts();
+    const times = texts.map(text => /\d{1,2}:\d{2}(?:\s*[ap]\.?\s*m\.?)?/i.exec(text)?.[0] ?? '');
+
+    return { times, seen: texts.map(text => `"${ firstWords(text, 60) }"`).join(', ') };
 };
 
 const resultsPage = async (actor: AnswersQuestions): Promise<Page> => {
@@ -62,10 +75,10 @@ export const SearchForFlightWithinCheckInWithPlaywright = (booking: ArajetBookin
 
                     await actor.attemptsTo(SearchForFlight.onArajet(search));
 
-                    const times = await departureTimesOn(await resultsPage(actor));
+                    const { times, seen } = await flightsShownOn(await resultsPage(actor));
                     const flight = times.findIndex(time => time && isWithin(departureInstant(date, time, window.timeZone), window));
 
-                    found.push(`${ date }: ${ times.filter(Boolean).join(', ') || 'no flights' }`);
+                    found.push(`${ date }: ${ times.filter(Boolean).join(', ') || seen }`);
 
                     if (flight >= 0) {
                         await actor.attemptsTo(
